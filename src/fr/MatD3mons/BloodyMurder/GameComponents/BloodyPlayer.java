@@ -5,7 +5,6 @@ import fr.MatD3mons.BloodyMurder.Game.Game;
 import fr.MatD3mons.BloodyMurder.Game.role;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.inventivetalent.nicknamer.api.event.NickNamerUpdateEvent;
 
 public class BloodyPlayer {
     public Player playerInstance;

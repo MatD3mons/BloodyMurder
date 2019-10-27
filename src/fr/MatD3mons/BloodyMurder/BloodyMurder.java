@@ -13,11 +13,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.NameTagVisibility;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.scoreboard.Team;
-import org.inventivetalent.nicknamer.NickNamerPlugin;
-import org.inventivetalent.nicknamer.api.NickManager;
-import org.inventivetalent.nicknamer.api.NickNamerAPI;
-import org.inventivetalent.nicknamer.api.SimpleNickManager;
-import org.inventivetalent.nicknamer.api.event.NickNamerUpdateEvent;
 
 import java.util.HashMap;
 import java.util.UUID;

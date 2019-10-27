@@ -20,9 +20,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scoreboard.*;
 import org.bukkit.scoreboard.Scoreboard;
-import org.inventivetalent.nicknamer.NickNamerPlugin;
-import org.inventivetalent.nicknamer.api.NickManager;
-import org.inventivetalent.nicknamer.api.NickNamerAPI;
 
 import java.util.*;
 

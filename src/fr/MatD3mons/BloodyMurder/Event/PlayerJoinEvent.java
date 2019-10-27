@@ -15,8 +15,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.potion.PotionEffectType;
-import org.inventivetalent.nicknamer.NickNamerPlugin;
-import org.inventivetalent.nicknamer.api.NickNamerAPI;
 
 import java.util.Objects;
 
