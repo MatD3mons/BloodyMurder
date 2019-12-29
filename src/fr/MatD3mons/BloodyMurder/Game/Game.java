@@ -79,7 +79,6 @@ public class Game {
         int x = Integer.parseInt(s[0]);
         int y = Integer.parseInt(s[1]);
         int z = Integer.parseInt(s[2]);
-        System.out.println(x+","+y+","+"z"+z);
         listor.add(new Location(world,x,y,z));
     }
 

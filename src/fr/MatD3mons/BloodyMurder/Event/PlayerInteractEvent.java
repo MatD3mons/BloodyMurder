@@ -21,12 +21,12 @@ public class PlayerInteractEvent implements Listener {
                 switch (b.getGame().getMode()){
                     case WAITING:
                     case END:
-                        if((a != Action.PHYSICAL) && (e.getItem().getType() == Material.BED))
+                        if((a != Action.PHYSICAL) && (p.getItemInHand().getType() == Material.BED))
                             GameManager.leave(b);
                         break;
                 }
             }else{
-                if((a != Action.PHYSICAL) && (e.getItem().getType() == Material.BED))
+                if((a != Action.PHYSICAL) && (p.getItemInHand().getType() == Material.BED))
                     GameManager.leave(b);
             }
         }

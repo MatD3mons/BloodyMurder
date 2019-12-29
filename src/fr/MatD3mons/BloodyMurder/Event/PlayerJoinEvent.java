@@ -3,6 +3,7 @@ package fr.MatD3mons.BloodyMurder.Event;
 import fr.MatD3mons.BloodyMurder.BloodyMurder;
 import fr.MatD3mons.BloodyMurder.Game.GameManager;
 import fr.MatD3mons.BloodyMurder.GameComponents.BloodyPlayer;
+import fr.MatD3mons.BloodyMurder.bdd.SqlConnection;
 import fr.MatD3mons.BloodyMurder.utile.Repository;
 import fr.MatD3mons.BloodyMurder.utile.util;
 import org.bukkit.Bukkit;
@@ -25,6 +26,7 @@ public class PlayerJoinEvent implements Listener {
     public void onPlayerJoinEvent(org.bukkit.event.player.PlayerJoinEvent e) {
         e.setJoinMessage(null);
         Player p = e.getPlayer();
+        BloodyMurder.sql.createAccount(p);
         p.getInventory().setHelmet(new ItemStack(Material.AIR, 1));
         p.getInventory().setChestplate(new ItemStack(Material.AIR, 1));
         p.getInventory().setLeggings(new ItemStack(Material.AIR, 1));

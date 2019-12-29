@@ -4,6 +4,7 @@ import fr.MatD3mons.BloodyMurder.Commande.BM;
 import fr.MatD3mons.BloodyMurder.Event.*;
 import fr.MatD3mons.BloodyMurder.Game.GameManager;
 import fr.MatD3mons.BloodyMurder.ScoreBoard.ScoreBoardDisplayer;
+import fr.MatD3mons.BloodyMurder.bdd.SqlConnection;
 import net.minecraft.server.v1_8_R3.EntityArmorStand;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.ArmorStand;
@@ -23,6 +24,7 @@ public class BloodyMurder extends JavaPlugin {
     public static GameManager gameManager;
     public static HashMap<UUID, PermissionAttachment> perms;
     public static HashMap<UUID, EntityArmorStand> stands;
+    public static SqlConnection sql;
 
     @Override
     public void onEnable() {
@@ -31,6 +33,8 @@ public class BloodyMurder extends JavaPlugin {
         gameManager = new GameManager();
         stands = new HashMap<>();
         perms = new HashMap<UUID, PermissionAttachment>();
+        sql = new SqlConnection("jdbc:mysql://","localhost","BloodyMurder","root","");
+        sql.connection();
         this.getCommand("BM").setExecutor(new BM());
         getServer().getPluginManager().registerEvents(new EntityDamageEvent(), this);
         getServer().getPluginManager().registerEvents(new PlayerJoinEvent(), this);
@@ -47,5 +51,6 @@ public class BloodyMurder extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        sql.disconnect();
     }
 }
