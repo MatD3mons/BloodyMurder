@@ -26,7 +26,6 @@ public class PlayerJoinEvent implements Listener {
     public void onPlayerJoinEvent(org.bukkit.event.player.PlayerJoinEvent e) {
         e.setJoinMessage(null);
         Player p = e.getPlayer();
-        BloodyMurder.sql.createAccount(p);
         p.getInventory().setHelmet(new ItemStack(Material.AIR, 1));
         p.getInventory().setChestplate(new ItemStack(Material.AIR, 1));
         p.getInventory().setLeggings(new ItemStack(Material.AIR, 1));
@@ -44,5 +43,6 @@ public class PlayerJoinEvent implements Listener {
         p.getInventory().clear();
         p.playSound(p.getLocation(), Sound.CLICK, 2F, 1F);
         Repository.players.put(p,new BloodyPlayer(p));
+        BloodyMurder.sql.createAccount(p);
     }
 }

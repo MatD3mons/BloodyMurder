@@ -547,7 +547,8 @@ public class Game {
                     if (timer < 0) {
                         if (playerInGame.size() > 0) {
                             for (BloodyPlayer b : playerInGame) {
-                                b.statue(r);
+                                b.update(r);
+                                BloodyMurder.sql.udpateStatut(b);
                                 setWait();
                                 rejoind(b);
                             }

@@ -81,7 +81,6 @@ public class Murder extends role {
             util.sendTitle(b.getPlayerInstance(), "§c§l Le MURDER a gagné", "", 0, 3, 0);
         else
             util.sendTitle(b.getPlayerInstance(), "§c§l Les MURDER ont gagné", "", 0, 3, 0);
-        b.setRole(null);
     }
 
     @Override

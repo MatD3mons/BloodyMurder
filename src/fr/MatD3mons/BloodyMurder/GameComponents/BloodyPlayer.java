@@ -17,7 +17,7 @@ public class BloodyPlayer {
     private int deaths;
     private int win;
     private int lose;
-
+    private String grade;
 
     public void setRole(role r) {
         role = r;
@@ -46,7 +46,6 @@ public class BloodyPlayer {
     public int getDeaths() {
         return deaths;
     }
-
     public int getWin() {
         return win;
     }
@@ -66,16 +65,17 @@ public class BloodyPlayer {
         lose = 0;
     }
 
-    public void statue(role r){
+    public void update(role r){
         if(r != null) {
             Totaltekill += kills;
-            kills = 0;
-            gold = 0;
             argent += kills * 25;
+            gold = 0;
+            kills = 0;
             if (r.equals(role))
                 win += 1;
             else
                 lose += 1;
+            setRole(null);
         }
     }
 
@@ -101,5 +101,14 @@ public class BloodyPlayer {
 
     public void setGold(int i) {
         this.gold = i;
+    }
+
+    public void setStatut(int kills, int argent, int deaths, int win, int lose, String grade) {
+        this.Totaltekill = kills;
+        this.argent = argent;
+        this.deaths = deaths;
+        this.win = win;
+        this.lose = lose;
+        this.grade = grade;
     }
 }

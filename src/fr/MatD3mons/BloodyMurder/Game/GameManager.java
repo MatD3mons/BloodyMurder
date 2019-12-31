@@ -80,7 +80,7 @@ public class GameManager {
         b.getPlayerInstance().getInventory().clear();
         if(b.getGame() != null)
             b.getGame().leave(b);
-        b.statue(null);
+        b.update(null);
         b.getPlayerInstance().teleport(GameManager.spawn);
     }
 

@@ -1,5 +1,8 @@
 package fr.MatD3mons.BloodyMurder.bdd;
 
+import fr.MatD3mons.BloodyMurder.BloodyMurder;
+import fr.MatD3mons.BloodyMurder.GameComponents.BloodyPlayer;
+import fr.MatD3mons.BloodyMurder.utile.Repository;
 import org.bukkit.entity.Player;
 
 import java.sql.*;
@@ -43,22 +46,29 @@ public class SqlConnection {
         return connection != null;
     }
 
-
     public void createAccount(Player player) {
         if (!hasAccount(player)) {
-            //INSERT
-
             try {
-                PreparedStatement q = connection.prepareStatement("INSERT INTO joueurs(uuid,coins,grade) VALUES (?,?,?)");
-                q.setString(1, player.getUniqueId().toString());
-                q.setInt(2, 0);
-                q.setString(3, "joueur");
+                PreparedStatement q = connection.prepareStatement("INSERT INTO joueurs(uuid,kills,argent,deaths,win,lose,grade) VALUES (?,?,?,?,?,?,?)");
+                q.setString(1, player.getUniqueId().toString());// uuid
+                q.setInt(2, 0);//kills;
+                q.setInt(3, 0);//argent;
+                q.setInt(4, 0);//deaths
+                q.setInt(5, 0);//win
+                q.setInt(6, 0);//lose
+                q.setString(7, "joueur");
                 q.execute();
                 q.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
 
+        } else {
+            if (Repository.BloodyPlayerContains(player)) {
+
+                BloodyPlayer b = Repository.findBloodyPlayer(player);
+                b.setStatut(get("kills", player), get("argent", player), get("deaths", player), get("win", player), get("lose", player), "joueur");
+            }
         }
     }
 
@@ -79,23 +89,23 @@ public class SqlConnection {
         return false;
     }
 
-    public int getBalance(Player player) {
+    public int get(String s, Player player) {
         //SELECT
 
         try {
-            PreparedStatement q = connection.prepareStatement("SELECT coins FROM joueurs WHERE uuid = ?");
+            PreparedStatement q = connection.prepareStatement("SELECT " + s + " FROM joueurs WHERE uuid = ?");
             q.setString(1, player.getUniqueId().toString());
 
-            int balance = 0;
+            int count = 0;
             ResultSet rs = q.executeQuery();
 
             while (rs.next()) {
-                balance = rs.getInt("coins");
+                count = rs.getInt(s);
             }
 
             q.close();
 
-            return balance;
+            return count;
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -103,44 +113,28 @@ public class SqlConnection {
 
         return 0;
     }
-    public void addMoney(Player player, int amount) {
-        //UPDATE
 
-        int balance = getBalance(player);
-        int newbalance = balance + amount;
+    public void udpateStatut(BloodyPlayer b) {
+
+        int kills = b.getTotaltekill();
+        int argent = b.getArgent();
+        int deaths = b.getDeaths();
+        int win = b.getWin();
+        int lose = b.getLose();
 
         try {
-            PreparedStatement rs = connection.prepareStatement("UPDATE joueurs SET coins = ? WHERE uuid = ?");
-            rs.setInt(1, newbalance);
-            rs.setString(2, player.getUniqueId().toString());
+            PreparedStatement rs = connection.prepareStatement("UPDATE joueurs SET kills = ?,argent = ?,deaths = ?,win = ?,lose = ? WHERE uuid = ?");
+            rs.setInt(1, kills);
+            rs.setInt(2, argent);
+            rs.setInt(3, deaths);
+            rs.setInt(4, win);
+            rs.setInt(5, lose);
+            rs.setString(6, b.getPlayerInstance().getUniqueId().toString());
             rs.executeUpdate();
             rs.close();
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-    }
-    public void removeMoney(Player player, int amount) {
-        //UPDATE
-
-        int balance = getBalance(player);
-        int newbalance = balance - amount;
-
-        if (newbalance <= 0) {
-            return;
-        }
-
-        try {
-            PreparedStatement rs = connection.prepareStatement("UPDATE joueurs SET coins = ? WHERE uuid = ?");
-            rs.setInt(1, newbalance);
-            rs.setString(2, player.getUniqueId().toString());
-            rs.executeUpdate();
-            rs.close();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
     }
 }
