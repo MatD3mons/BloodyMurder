@@ -66,17 +66,21 @@ public class BloodyPlayer {
     }
 
     public void update(role r){
-        if(r != null) {
-            Totaltekill += kills;
-            argent += kills * 25;
-            gold = 0;
-            kills = 0;
-            if (r.equals(role))
+        Totaltekill += kills;
+        argent += kills * 25 + gold;
+        gold = 0;
+        kills = 0;
+        if (role != null) {
+            if (r == role) {
                 win += 1;
-            else
-                lose += 1;
-            setRole(null);
+                argent += 100;
+            } else {
+                if (r != null)
+                    lose += 1;
+            }
         }
+        BloodyMurder.sql.udpateStatut(this);
+        setRole(null);
     }
 
     public Player getPlayerInstance() {

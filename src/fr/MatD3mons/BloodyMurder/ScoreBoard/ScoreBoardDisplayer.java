@@ -48,9 +48,12 @@ public class ScoreBoardDisplayer {
 		int a = b.getArgent();
 		int k = b.getTotaltekill();
 		int m = b.getDeaths();
-		int W = b.getWin();
+		float W = b.getWin();
 		int L = b.getLose();
 		int n = b.getWin() + b.getLose();
+		float r = 0;
+		if ( n != 0)
+			r =  W/(float) n;
 		String[] elements = new String[] {
 				"  §a§lBloodyMurder ",
 				"",
@@ -58,7 +61,7 @@ public class ScoreBoardDisplayer {
 				" ",
 				"§6Kills: §e"+k,
 				"§6Deaths: §e"+m,
-				"§6Ratio: §e"+(W+L/(1+n)),
+				"§6Ratio: §e"+r,
 				"§6Parti: §e"+n,
 				"   ",
 				"§a§lBloodyBattle.net",

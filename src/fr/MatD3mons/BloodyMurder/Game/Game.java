@@ -31,6 +31,7 @@ public class Game {
     private HashMap<Player,Team> listTeam;
     private Scoreboard scoreboard;
     private GameMode mode;
+    private role role;
     private int limite;
     private int timer;
     private String name;
@@ -66,6 +67,7 @@ public class Game {
         listTeam = new HashMap<>();
         limite = 16;
         this.name = name;
+        role = null;
         setDisable();
         spawn = location;;
         world = location.getWorld();
@@ -175,9 +177,9 @@ public class Game {
                 resetTeam(b.getPlayerInstance());
             }
         }
+        b.update(role);
         playerInGame.remove(b);
         b.setGame(null);
-        b.setRole(null);
         Message(b.getPlayerInstance().getName()+" a quitter la partie ("+playerInGame.size()+"/"+limite+") ");
         util.sendTitle(b, " ", "§a§lVous quiter la partie", 0, 3, 0);
         b.getPlayerInstance().teleport(GameManager.spawn);
@@ -222,6 +224,7 @@ public class Game {
         if (mode != GameMode.WAITING) {
             mode = GameMode.WAITING;
             innocentleft.clear();
+            role = null;
             murderleft.clear();
             timer = 20;
             for (Entity e : world.getEntities()) {
@@ -521,10 +524,10 @@ public class Game {
         }
     }
 
-
     public void setEnd(role r) {
         if (mode != GameMode.END) {
             mode = GameMode.END;
+            this.role = r;
             for (Entity e : world.getEntities()) {
                 if (!(e instanceof Player))
                     e.remove();
@@ -548,7 +551,6 @@ public class Game {
                         if (playerInGame.size() > 0) {
                             for (BloodyPlayer b : playerInGame) {
                                 b.update(r);
-                                BloodyMurder.sql.udpateStatut(b);
                                 setWait();
                                 rejoind(b);
                             }

@@ -72,7 +72,6 @@ public class Innocent extends role {
             util.sendTitle(b.getPlayerInstance(), "§a§l L' INNOCENTS a gagné", "", 0, 3, 0);
         else
             util.sendTitle(b.getPlayerInstance(), "§a§l Les INNOCENTS ont gagné", "", 0, 3, 0);
-        b.setRole(null);
     }
 
     @Override

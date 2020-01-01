@@ -1,5 +1,6 @@
 package fr.MatD3mons.BloodyMurder.Event;
 
+import fr.MatD3mons.BloodyMurder.BloodyMurder;
 import fr.MatD3mons.BloodyMurder.GameComponents.BloodyPlayer;
 import fr.MatD3mons.BloodyMurder.utile.Repository;
 import org.bukkit.entity.Player;
