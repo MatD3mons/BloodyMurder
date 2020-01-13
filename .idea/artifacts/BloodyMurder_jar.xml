@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" build-on-make="true" name="BloodyMurder:jar">
-    <output-path>D:/Users/Acer/Documents/Projet Personnel/Serveur Minecraft/plugins</output-path>
-    <root id="archive" name="BloodyMurder.jar">
-      <element id="module-output" name="BloodyMurder" />
-    </root>
-  </artifact>
-</component>
