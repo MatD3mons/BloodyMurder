@@ -62,6 +62,9 @@ public class SqlConnection {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+            finally {
+                BloodyMurder.sql.disconnect();
+            }
 
         } else {
             if (Repository.BloodyPlayerContains(player)) {
@@ -110,6 +113,9 @@ public class SqlConnection {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        finally {
+            BloodyMurder.sql.disconnect();
+        }
 
         return 0;
     }
@@ -135,6 +141,9 @@ public class SqlConnection {
 
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+        finally {
+            BloodyMurder.sql.disconnect();
         }
     }
 }
