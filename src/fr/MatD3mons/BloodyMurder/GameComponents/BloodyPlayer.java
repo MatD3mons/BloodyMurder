@@ -3,6 +3,7 @@ package fr.MatD3mons.BloodyMurder.GameComponents;
 import fr.MatD3mons.BloodyMurder.BloodyMurder;
 import fr.MatD3mons.BloodyMurder.Game.Game;
 import fr.MatD3mons.BloodyMurder.Game.role;
+import fr.MatD3mons.BloodyMurder.bdd.BloodyPlayerDao;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -79,7 +80,7 @@ public class BloodyPlayer {
                     lose += 1;
             }
         }
-        BloodyMurder.sql.udpateStatut(this);
+        BloodyMurder.bloodyPlayerDao.update(playerInstance.getUniqueId(),this);
         setRole(null);
     }
 

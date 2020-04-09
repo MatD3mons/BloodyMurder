@@ -3,10 +3,7 @@ package fr.MatD3mons.BloodyMurder.Event;
 import fr.MatD3mons.BloodyMurder.BloodyMurder;
 import fr.MatD3mons.BloodyMurder.Game.GameManager;
 import fr.MatD3mons.BloodyMurder.GameComponents.BloodyPlayer;
-import fr.MatD3mons.BloodyMurder.bdd.SqlConnection;
 import fr.MatD3mons.BloodyMurder.utile.Repository;
-import fr.MatD3mons.BloodyMurder.utile.util;
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -16,8 +13,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.potion.PotionEffectType;
-
-import java.util.Objects;
 
 
 public class PlayerJoinEvent implements Listener {
@@ -43,6 +38,6 @@ public class PlayerJoinEvent implements Listener {
         p.getInventory().clear();
         p.playSound(p.getLocation(), Sound.CLICK, 2F, 1F);
         Repository.players.put(p,new BloodyPlayer(p));
-        BloodyMurder.sql.createAccount(p);
+        BloodyMurder.bloodyPlayerDao.create(p.getUniqueId());
     }
 }

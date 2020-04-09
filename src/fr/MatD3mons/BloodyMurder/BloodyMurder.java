@@ -1,19 +1,14 @@
 package fr.MatD3mons.BloodyMurder;
 
-import fr.MatD3mons.BloodyMurder.Commande.BM;
+import fr.MatD3mons.BloodyMurder.Commande.CmdBase;
 import fr.MatD3mons.BloodyMurder.Event.*;
 import fr.MatD3mons.BloodyMurder.Game.GameManager;
 import fr.MatD3mons.BloodyMurder.ScoreBoard.ScoreBoardDisplayer;
-import fr.MatD3mons.BloodyMurder.bdd.SqlConnection;
+import fr.MatD3mons.BloodyMurder.bdd.BloodyPlayerDao;
 import net.minecraft.server.v1_8_R3.EntityArmorStand;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scoreboard.NameTagVisibility;
-import org.bukkit.scoreboard.ScoreboardManager;
-import org.bukkit.scoreboard.Team;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -24,7 +19,11 @@ public class BloodyMurder extends JavaPlugin {
     public static GameManager gameManager;
     public static HashMap<UUID, PermissionAttachment> perms;
     public static HashMap<UUID, EntityArmorStand> stands;
-    public static SqlConnection sql;
+    public static BloodyPlayerDao bloodyPlayerDao;
+
+    public static Plugin getInstance() {
+        return instance;
+    }
 
     @Override
     public void onEnable() {
@@ -33,9 +32,8 @@ public class BloodyMurder extends JavaPlugin {
         gameManager = new GameManager();
         stands = new HashMap<>();
         perms = new HashMap<UUID, PermissionAttachment>();
-        sql = new SqlConnection("jdbc:mysql://","localhost","BloodyMurder","root","");
-        sql.connection();
-        this.getCommand("BM").setExecutor(new BM());
+        bloodyPlayerDao = new BloodyPlayerDao();
+        this.getCommand("bm").setExecutor(new CmdBase());
         getServer().getPluginManager().registerEvents(new EntityDamageEvent(), this);
         getServer().getPluginManager().registerEvents(new PlayerJoinEvent(), this);
         getServer().getPluginManager().registerEvents(new EntityDamageByEntity(), this);
@@ -47,10 +45,5 @@ public class BloodyMurder extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new InventoryClickEvent(), this);
         getServer().getPluginManager().registerEvents(new PlayerInteractEvent(), this);
         ScoreBoardDisplayer.initialize();
-    }
-
-    @Override
-    public void onDisable() {
-        sql.disconnect();
     }
 }
