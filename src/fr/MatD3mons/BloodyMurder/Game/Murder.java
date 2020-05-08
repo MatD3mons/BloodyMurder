@@ -17,47 +17,43 @@ public class Murder extends role {
 
     @Override
     public boolean EntityDamageByEntity(EntityDamageByEntityEvent e){
-        if (e.getDamager() instanceof Player) {
-            Player killer = (Player) e.getDamager();
-            if (Repository.findBloodyPlayer(killer).getGame() != null) {
-                Game g = Repository.findBloodyPlayer(killer).getGame();
-                if (g.getMode() == Game.GameMode.GAME) {
-                    Player p2 = (Player) e.getEntity();
-                    if (Repository.findBloodyPlayer(killer).getRole() instanceof Murder) {
-                        if (!Repository.findBloodyPlayer(p2).getRole().getmechant()) {
-                            if (killer.getItemInHand().getType() == Material.DIAMOND_SWORD) {
-                                if (killer.getInventory().contains(Material.RED_SANDSTONE)) {
-                                    p2.getInventory().clear();
-                                    Repository.findBloodyPlayer(p2).adddeaths();
-                                    e.setDamage(100);
-                                    g.supInnocent(Repository.findBloodyPlayer(p2));
-                                    for (int i = 0; i < killer.getInventory().getSize(); i++) {
-                                        if (killer.getInventory().getItem(i) != null)
-                                            if (killer.getInventory().getItem(i).getType() == Material.RED_SANDSTONE) {
-                                                int j = killer.getInventory().getItem(i).getAmount();
-                                                if (j == 1)
-                                                    killer.getInventory().remove(Material.RED_SANDSTONE);
-                                                else
-                                                    killer.getInventory().getItem(i).setAmount(j - 1);
-                                            }
-                                    }
-                                    if (g.innocentleftsixe() <= 0) {
-                                        g.setEnd(Repository.findBloodyPlayer(killer).getRole());
-                                    } else {
-                                        util.sendTitle(killer, "", "§a§lil reste: §b§l" + (g.innocentleftsixe()) + " §a§linnocents", 0, 3, 0);
-                                    }
-                                    Repository.findBloodyPlayer(killer).addkills();
-                                    return true;
-                                } else {
-                                    util.sendTitle(killer, "", "§c§lTu n'as pas de soif de sang", 0, 3, 0);
+        if (!(e.getDamager() instanceof Player)){ return false;}
+        Player killer = (Player) e.getDamager();
+        if (Repository.findBloodyPlayer(killer).getGame() == null) {return false;}
+        Game g = Repository.findBloodyPlayer(killer).getGame();
+        if (g.getMode() != Game.GameMode.GAME) {return false;}
+        Player p2 = (Player) e.getEntity();
+        if (Repository.findBloodyPlayer(killer).getRole() == roles.Murder) {
+            if (!(Repository.findBloodyPlayer(p2).getRole() == roles.Murder)){
+                if (killer.getItemInHand().getType() == Material.DIAMOND_SWORD) {
+                    if (killer.getInventory().contains(Material.RED_SANDSTONE)) {
+                        p2.getInventory().clear();
+                        Repository.findBloodyPlayer(p2).adddeaths();
+                        e.setDamage(100);
+                        g.supInnocent(Repository.findBloodyPlayer(p2));
+                        for (int i = 0; i < killer.getInventory().getSize(); i++) {
+                            if (killer.getInventory().getItem(i) != null)
+                                if (killer.getInventory().getItem(i).getType() == Material.RED_SANDSTONE) {
+                                    int j = killer.getInventory().getItem(i).getAmount();
+                                    if (j == 1)
+                                        killer.getInventory().remove(Material.RED_SANDSTONE);
+                                    else
+                                        killer.getInventory().getItem(i).setAmount(j - 1);
                                 }
-                            }
-
-                        } else {
-                            util.sendTitle(killer, "", "§c§lIl est aussi Murder", 0, 2, 0);
                         }
+                        if (g.innocentleftsixe() <= 0) {
+                            g.setEnd(GameManager.differentrole.get(roles.Innocent));
+                        } else {
+                            util.sendTitle(killer, "", "§a§lil reste: §b§l" + (g.innocentleftsixe()) + " §a§linnocents", 0, 3, 0);
+                        }
+                        Repository.findBloodyPlayer(killer).addkills();
+                        return true;
+                    } else {
+                        util.sendTitle(killer, "", "§c§lTu n'as pas de soif de sang", 0, 3, 0);
                     }
                 }
+             } else{
+                util.sendTitle(killer, "", "§c§lIl est aussi Murder", 0, 2, 0);
             }
         }
         return false;
@@ -110,5 +106,9 @@ public class Murder extends role {
                 }
             }
         }
+    }
+
+    public void Interact(BloodyPlayer b){
+
     }
 }

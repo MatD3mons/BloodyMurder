@@ -1,11 +1,11 @@
 package fr.MatD3mons.BloodyMurder.Commande;
 
-import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-public abstract class Cmd {
+
+public abstract class Cmd{
 
     public List<String> aliases;
     public List<Cmd> subCommands;
@@ -16,22 +16,30 @@ public abstract class Cmd {
         this.subCommands = new ArrayList<>();
     }
 
-    public void execute(CommandSender commandSender, org.bukkit.command.Command command, String s, String[] strings){
-        if(strings.length > 0) {
+    public void execute(Context context){
+        if(context.args.size() > 0) {
             for (Cmd subCommand: this.subCommands){
-                if(subCommand.aliases.contains(strings[0].toLowerCase())){
-                    subCommand.execute(commandSender,command,s,strings);
+                if(subCommand.aliases.contains(context.args.get(0).toLowerCase())){
+                    context.args.remove(0);
+                    subCommand.execute(context);
+                    context.commandChain.add(this);
                     return;
                 }
             }
         }
-        perform(commandSender,command,s,strings);
+        if (!valideContext(context)) {
+            return;
+        }
+        perform(context);
     }
 
     public void addSubCommand(Cmd subCommand){
         this.subCommands.add(subCommand);
     }
 
-    public abstract void perform(CommandSender commandSender, org.bukkit.command.Command command, String s, String[] strings);
+    public abstract void perform(Context context);
 
+    public Boolean valideContext(Context context){
+        return true;
+    }
 }

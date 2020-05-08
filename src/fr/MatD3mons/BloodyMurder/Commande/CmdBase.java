@@ -1,9 +1,11 @@
 package fr.MatD3mons.BloodyMurder.Commande;
 
 import fr.MatD3mons.BloodyMurder.Commande.cmd.*;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class CmdBase extends Cmd implements CommandExecutor {
 
@@ -30,7 +32,7 @@ public class CmdBase extends Cmd implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender commandSender, org.bukkit.command.Command command, String s, String[] strings) {
-        this.execute( commandSender, command,  s, strings);
+        this.execute(new Context(commandSender, new ArrayList<>(Arrays.asList(strings)), s));
         return true;
     }
 
@@ -39,8 +41,8 @@ public class CmdBase extends Cmd implements CommandExecutor {
     }
 
     @Override
-    public void perform(CommandSender commandSender, Command command, String s, String[] strings) {
-        this.cmdHelp.execute(commandSender,command,s,strings);
+    public void perform(Context context) {
+        context.commandChain.add(this);
+        this.cmdHelp.execute(context);
     }
-
 }

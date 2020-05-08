@@ -6,6 +6,11 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 public abstract class role {
 
+    public enum roles{
+        Murder,
+        Innocent
+    }
+
     public role(boolean b){
         setmechant(b);
     }
@@ -27,5 +32,7 @@ public abstract class role {
     public abstract void fin(BloodyPlayer b);
 
     public abstract void take(BloodyPlayer b);
+
+    public abstract void Interact(BloodyPlayer b);
 
 }

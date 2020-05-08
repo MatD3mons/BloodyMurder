@@ -55,8 +55,7 @@ public class BloodyPlayerDao implements Dao<UUID, BloodyPlayer> {
         }
         Player player = Bukkit.getPlayer(key);
         BloodyPlayer bloodyPlayer = get(key);
-        if(!Repository.BloodyPlayerContains(player) && bloodyPlayer != null)
-            Repository.players.put(player, bloodyPlayer);
+        Repository.players.put(player, bloodyPlayer);
         return bloodyPlayer;
     }
 

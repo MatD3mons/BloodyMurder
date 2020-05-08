@@ -2,11 +2,8 @@ package fr.MatD3mons.BloodyMurder.Commande.cmd;
 
 import fr.MatD3mons.BloodyMurder.Commande.Aliases;
 import fr.MatD3mons.BloodyMurder.Commande.Cmd;
+import fr.MatD3mons.BloodyMurder.Commande.Context;
 import fr.MatD3mons.BloodyMurder.GameComponents.BloodyPlayer;
-import fr.MatD3mons.BloodyMurder.utile.Repository;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 public class CmdSetEnd extends Cmd {
 
@@ -16,12 +13,10 @@ public class CmdSetEnd extends Cmd {
     }
 
     @Override
-    public void perform(CommandSender commandSender, Command command, String s, String[] strings) {
-        if(command instanceof Player) {
-            BloodyPlayer b = Repository.findBloodyPlayer((Player) commandSender);
-            if(b.getGame() != null) {
-                b.getGame().setEnd(b.getRole());
-            }
+    public void perform(Context context) {
+        BloodyPlayer b = context.bloodyPlayer;
+        if (b.getGame() != null) {
+            b.getGame().setEnd(b.getRole());
         }
     }
 }

@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 public class BloodyPlayer {
     public Player playerInstance;
     private Game game = null;
-    private role role = null;
+    private role.roles role = null;
     private int Totaltekill;
     private int gold;
     private int argent;
@@ -20,11 +20,11 @@ public class BloodyPlayer {
     private int lose;
     private String grade;
 
-    public void setRole(role r) {
+    public void setRole(role.roles r) {
         role = r;
     }
 
-    public role getRole() {
+    public role.roles getRole() {
         return role;
     }
 
@@ -66,7 +66,7 @@ public class BloodyPlayer {
         lose = 0;
     }
 
-    public void update(role r){
+    public void update(role.roles r){
         Totaltekill += kills;
         argent += kills * 25 + gold;
         gold = 0;

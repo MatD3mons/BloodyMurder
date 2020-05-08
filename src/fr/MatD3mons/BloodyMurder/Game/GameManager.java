@@ -7,19 +7,20 @@ import org.bukkit.Location;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 public class GameManager {
 
     public static HashMap<String,Game> games;
-    public static ArrayList<role> differentrole;
+    public static Map<role.roles,role> differentrole;
     public static Location spawn;
 
     public GameManager(){
         games = new HashMap<>();
-        differentrole = new ArrayList<>();
-        differentrole.add(new Murder());
-        differentrole.add(new Innocent());
+        differentrole = new HashMap<>();
+        differentrole.put(role.roles.Murder,new Murder());
+        differentrole.put(role.roles.Innocent,new Innocent());
         spawn = util.setlocation("lobby");
 
         for(String string: BloodyMurder.instance.getConfig().getConfigurationSection("games").getKeys(false)){

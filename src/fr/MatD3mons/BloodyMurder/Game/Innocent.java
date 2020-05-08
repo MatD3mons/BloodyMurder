@@ -10,6 +10,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Arrays;
+
 public class Innocent extends role {
 
     public Innocent(){
@@ -18,41 +20,34 @@ public class Innocent extends role {
 
     @Override
     public boolean EntityDamageByEntity(EntityDamageByEntityEvent e) {
-        if(e.getDamager() instanceof Arrow){
-            Arrow fleche = ((Arrow) e.getDamager());
-            if(fleche.getShooter() instanceof Player) {
-                Player killer = (Player) fleche.getShooter();
-                if (Repository.findBloodyPlayer(killer).getGame() != null) {
-                    if (Repository.findBloodyPlayer(killer).getRole() instanceof Innocent){
-                        Game g = Repository.findBloodyPlayer(killer).getGame();
-                        if (g.getMode() == Game.GameMode.GAME) {
-                            Player p2 = (Player) e.getEntity();
-                            if (Repository.findBloodyPlayer(p2).getRole().getmechant()) {
-                                p2.getInventory().clear();
-                                e.setDamage(100);
-                                Repository.findBloodyPlayer(killer).addkills();
-                                Repository.findBloodyPlayer(p2).adddeaths();
-                                g.supMurder(Repository.findBloodyPlayer(p2));
-                                if (g.murderleftsixe() <= 0) {
-                                    g.setEnd(Repository.findBloodyPlayer(killer).getRole());
-                                } else {
-                                    util.sendTitle(killer, "", "§a§lil reste: §b§l" + (g.murderleftsixe()) + " §a§lMurder", 0, 3, 0);
-                                }
-                                return true;
-                            } else {
-                                Repository.findBloodyPlayer(killer).removekills();
-                                g.supInnocent(Repository.findBloodyPlayer(p2));
-                                p2.getInventory().clear();
-                                e.setDamage(100);
-                                return true;
-                            }
-                        }
-                    }
-                }
+        if(!(e.getDamager() instanceof Arrow)){return false;}
+        Arrow fleche = ((Arrow) e.getDamager());
+        if(!(fleche.getShooter() instanceof Player)){return false;}
+        Player killer = (Player) fleche.getShooter();
+        if (Repository.findBloodyPlayer(killer).getGame() == null) {return false;}
+        if (!(Repository.findBloodyPlayer(killer).getRole() == roles.Innocent)){return false;}
+        Game g = Repository.findBloodyPlayer(killer).getGame();
+        if (g.getMode() != Game.GameMode.GAME) { return false;}
+        Player p2 = (Player) e.getEntity();
+        if (Repository.findBloodyPlayer(p2).getRole() == roles.Murder) {
+            p2.getInventory().clear();
+            e.setDamage(100);
+            Repository.findBloodyPlayer(killer).addkills();
+            Repository.findBloodyPlayer(p2).adddeaths();
+            g.supMurder(Repository.findBloodyPlayer(p2));
+            if (g.murderleftsixe() <= 0) {
+                g.setEnd(GameManager.differentrole.get(roles.Murder));
+            } else {
+                util.sendTitle(killer, "", "§a§lil reste: §b§l" + (g.murderleftsixe()) + " §a§lMurder", 0, 3, 0);
             }
+            return true;
+        } else {
+            Repository.findBloodyPlayer(killer).removekills();
+            g.supInnocent(Repository.findBloodyPlayer(p2));
+            p2.getInventory().clear();
+            e.setDamage(100);
+            return true;
         }
-
-        return false;
     }
 
     @Override
@@ -101,6 +96,11 @@ public class Innocent extends role {
                 }
             }
         }
+    }
+
+    @Override
+    public void Interact(BloodyPlayer b) {
+
     }
 
 }

@@ -2,25 +2,23 @@ main: fr.MatD3mons.BloodyMurder.BloodyMurder
 name: BloodyMurder
 version: 1.0
 author: MatD3mons
+
 commands:
- BM:
-  description: Permette de voire les différente commande
-  permission: bloodymurder.bm
- BM setWait:
-   description: Permette mettre en pause votre game
-   permission: bloodymurder.bm.setwait
- BM setGame:
-   description: Permette de lancer votre game
-   permission: bloodymurder.bm.setgame
- BM setEnd:
-   description: Permette de finir votre game
-   permission: bloodymurder.bm.setend
- BM join:
-   description: Permette de rejoindre une game
-   permission: bloodymurder.bm.join
- BM lobby:
-   description: Permette de rejoindre le lobby
-   permission: bloodymurder.bm.lobby
- BM setor <game>:
-   description: Permette d'ajouter de l'or
-   permission: bloodymurder.bm.setor
+  BloodyMurder:
+    description: Permette de voire les différente commande
+    aliases: [bm]
+permissions:
+  BloodyMurder.Help:
+    description: give players access to use check commands
+  BloodyMurder.Join:
+    description: give players access to use check commands
+  BloodyMurder.Lobby:
+    description: give players access to use check commands
+  BloodyMurder.SetEnd:
+    description: give players access to use check commands
+  BloodyMurder.SetGame:
+    description: give players access to use check commands
+  BloodyMurder.SetOr:
+    description: give players access to use check commands
+  BloodyMurder.SetWait:
+    description: give players access to use check commands
