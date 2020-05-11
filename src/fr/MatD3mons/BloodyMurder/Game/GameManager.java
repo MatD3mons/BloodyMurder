@@ -7,7 +7,6 @@ import org.bukkit.Location;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 public class GameManager {
@@ -34,41 +33,35 @@ public class GameManager {
         BloodyMurder.instance.saveConfig();
     }
 
-    public static void rejoind(BloodyPlayer b){
-        if(b.getGame() == null){
-            Game game = null;
-            //=== On check si aucune game attend des joueur
-            for(Game gametest : games.values()){
-                if(gametest.getMode() == Game.GameMode.WAITING && gametest.getSixe() <= gametest.getLimite()){
-                    game = gametest;
-                    break;
-                }
+    public static void rejoind(BloodyPlayer b) {
+        if (b.getGame() != null) {
+            b.getPlayerInstance().sendMessage("§a§lVous être déja en game");
+            return;
+        }
+        //=== On check si aucune game attend des joueur
+        for (Game gametest : games.values()) {
+            if (gametest.getMode() == Game.GameMode.WAITING && gametest.getSixe() <= gametest.getLimite()) {
+                gametest.rejoind(b);
+                return;
             }
-            ArrayList<Integer> random = util.randomlist(games.size());
-            //=== On check en random si y'a une game libre
-            if(game == null) {
-                for (int i = 0; i < games.size(); i++) {
-                    ArrayList<Game> gametest = new ArrayList<>();
-                    for(String s:games.keySet())
-                        gametest.add(games.get(s));
-                    if(gametest.get(random.get(i)).getMode() == Game.GameMode.DISABLE){
-                        game = gametest.get(random.get(i));
-                        break;
-                    }
-                }
+        }
+        //=== On check en random si y'a une game libre
+        ArrayList<Game> random = util.randomlist(new ArrayList<>(games.values()));
+        for (int i = 0; i < games.size(); i++) {
+            ArrayList<Game> gametest = new ArrayList<>();
+            for (String s : games.keySet())
+                gametest.add(games.get(s));
+            if (gametest.get(i).getMode() == Game.GameMode.DISABLE) {
+                gametest.get(i).rejoind(b);
+                return;
             }
-            //=== plus de place, on l'ajoute random au parti en cours
-            if(game == null){
-                for(Game gametest : games.values()){
-                    if(gametest.getSixe() <= gametest.getLimite()){
-                        game = gametest;
-                        break;
-                    }
-                }
+        }
+        //=== plus de place, on l'ajoute random au parti en cours
+        for (Game gametest : games.values()) {
+            if (gametest.getSixe() <= gametest.getLimite()) {
+                gametest.rejoind(b);
+                return;
             }
-            game.rejoind(b);
-        }else{
-            b.getPlayerInstance().sendMessage("§a§lVus être déja en game");
         }
     }
 

@@ -32,13 +32,6 @@ public class Innocent extends Role {
             p2.getInventory().clear();
             e.setDamage(100);
             Repository.findBloodyPlayer(killer).addkills();
-            Repository.findBloodyPlayer(p2).adddeaths();
-            g.supMurder(Repository.findBloodyPlayer(p2));
-            if (g.murderleftsixe() <= 0) {
-                g.setEnd(Roles.Innocent);
-            } else {
-                util.sendTitle(killer, "", "§a§lil reste: §b§l" + (g.murderleftsixe()) + " §a§lMurder", 0, 3, 0);
-            }
             return true;
         } else {
             Repository.findBloodyPlayer(killer).removekills();
@@ -100,6 +93,18 @@ public class Innocent extends Role {
     @Override
     public void Interact(BloodyPlayer b) {
 
+    }
+
+    @Override
+    public void death(BloodyPlayer b) {
+        Game g = b.getGame();
+        b.adddeaths();
+        g.supInnocent(b);
+        if (g.innocentleftsixe() <= 0) {
+            g.setEnd(Roles.Murder);
+        } else {
+            util.sendTitle(g, "", "§a§lil reste: §b§l" + (g.innocentleftsixe()) + " §a§linnocents", 0, 3, 0);
+        }
     }
 
 }

@@ -33,6 +33,10 @@ public class Game {
     public Location spawn;
     public World world;
 
+    public ArrayList<BloodyPlayer> getPlayerInGame() {
+        return playerInGame;
+    }
+
     public void setor(Player p) {
         Location l = p.getLocation();
         List<String> list;
@@ -60,7 +64,7 @@ public class Game {
         listor = new ArrayList<>();
         listrole = new ArrayList<>();
         listTeam = new HashMap<>();
-        limite = 16;
+        limite = 8;
         this.name = name;
         role = null;
         setDisable();
@@ -313,10 +317,10 @@ public class Game {
                     }
                     break;
             }
-            ArrayList<Integer> random = util.randomlist(playerInGame.size());
+            ArrayList<BloodyPlayer> random = util.randomlist(playerInGame);
             for (int i = 0; i < playerInGame.size(); i++) {
-                playerInGame.get(i).setRole(listrole.get(random.get(i)));
-                if (listrole.get(random.get(i)) == Roles.Murder) {
+                playerInGame.get(i).setRole(listrole.get(i));
+                if (listrole.get(i) == Roles.Murder) {
                     murderleft.add(playerInGame.get(i));
                 } else {
                     innocentleft.add(playerInGame.get(i));

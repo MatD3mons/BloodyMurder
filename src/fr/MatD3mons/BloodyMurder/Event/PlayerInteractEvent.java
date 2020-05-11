@@ -2,6 +2,7 @@ package fr.MatD3mons.BloodyMurder.Event;
 
 import fr.MatD3mons.BloodyMurder.Game.GameManager;
 import fr.MatD3mons.BloodyMurder.Game.Role;
+import fr.MatD3mons.BloodyMurder.Game.Roles;
 import fr.MatD3mons.BloodyMurder.GameComponents.BloodyPlayer;
 import fr.MatD3mons.BloodyMurder.utile.Repository;
 import org.bukkit.Material;
@@ -25,9 +26,9 @@ public class PlayerInteractEvent implements Listener {
                 Leave(a, p, b);
                 break;
             case GAME:
-                if (b.getRole() == Role.roles.Murder)
+                if (b.getRole() == Roles.Murder)
                     if ((a != Action.PHYSICAL))
-                        GameManager.differentrole.get(Role.roles.Murder).Interact(b);
+                        Roles.PlayerRoles.get(Roles.Murder).Interact(b);
                 break;
         }
     }

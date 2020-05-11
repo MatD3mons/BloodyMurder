@@ -4,7 +4,9 @@ import fr.MatD3mons.BloodyMurder.Commande.Cmd;
 import fr.MatD3mons.BloodyMurder.Commande.CmdBase;
 import fr.MatD3mons.BloodyMurder.Commande.Context;
 import fr.MatD3mons.BloodyMurder.Event.*;
+import fr.MatD3mons.BloodyMurder.Game.Game;
 import fr.MatD3mons.BloodyMurder.Game.GameManager;
+import fr.MatD3mons.BloodyMurder.Game.Roles;
 import fr.MatD3mons.BloodyMurder.ScoreBoard.ScoreBoardDisplayer;
 import fr.MatD3mons.BloodyMurder.bdd.BloodyPlayerDao;
 import fr.MatD3mons.BloodyMurder.utile.Repository;
@@ -54,6 +56,14 @@ public class BloodyMurder extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new InventoryClickEvent(), this);
         getServer().getPluginManager().registerEvents(new PlayerInteractEvent(), this);
         ScoreBoardDisplayer.initialize();
+    }
+
+    @Override
+    public void onDisable() {
+        for (Game g:GameManager.games.values()){
+            if(g.getMode() == Game.GameMode.GAME)
+                g.setEnd(Roles.Innocent);
+        }
     }
 
     @Override

@@ -1,6 +1,7 @@
 package fr.MatD3mons.BloodyMurder.utile;
 
 import fr.MatD3mons.BloodyMurder.BloodyMurder;
+import fr.MatD3mons.BloodyMurder.Game.Game;
 import fr.MatD3mons.BloodyMurder.GameComponents.BloodyPlayer;
 import net.minecraft.server.v1_8_R3.*;
 import net.minecraft.server.v1_8_R3.PacketPlayOutTitle.EnumTitleAction;
@@ -18,8 +19,20 @@ import java.util.*;
 
 public class util {
 
+	public static void sendTitle(Game game,String title, String subtitle, int fadein, int say, int fadeout){
+		for (BloodyPlayer b : game.getPlayerInGame())
+			sendTitle(b.getPlayerInstance(),title,subtitle,fadein,say,fadeout);
+	}
+
 	public static void sendTitle(BloodyPlayer b, String title, String subtitle, int fadein, int say, int fadeout){
 		sendTitle(b.getPlayerInstance(),title,subtitle,fadein,say,fadeout);
+	}
+
+	public static void sendActionBar(Player p, String message) {
+		IChatBaseComponent cbc = IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + message + "\"}");
+		PacketPlayOutChat ppoc = new PacketPlayOutChat(cbc, (byte) 2);
+		((CraftPlayer) p).getHandle().playerConnection.sendPacket(ppoc);
+
 	}
 
     public static void sendTitle (Player player, String title, String subtitle, int fadein, int say, int fadeout) {
@@ -44,14 +57,11 @@ public class util {
 		return item;
 	}
 
-	public static ArrayList<Integer> randomlist(int x){
-		ArrayList<Integer> numbers = new ArrayList();
-		for(int i = 0; i < x; i++)
-		{
-			numbers.add(i);
-		}
-		Collections.shuffle(numbers);
-		return numbers;
+	public static <T> ArrayList<T> randomlist(ArrayList<T> list){
+		ArrayList<T> new_list = new ArrayList<>();
+		Collections.copy(list,new_list);
+		Collections.shuffle(new_list);
+		return new_list;
 	}
 
     public static Location setlocation(String s) {

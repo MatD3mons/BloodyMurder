@@ -3,6 +3,7 @@ package fr.MatD3mons.BloodyMurder.Event;
 import fr.MatD3mons.BloodyMurder.BloodyMurder;
 import fr.MatD3mons.BloodyMurder.Game.Game;
 import fr.MatD3mons.BloodyMurder.Game.GameManager;
+import fr.MatD3mons.BloodyMurder.Game.Roles;
 import fr.MatD3mons.BloodyMurder.GameComponents.BloodyPlayer;
 import fr.MatD3mons.BloodyMurder.utile.Repository;
 import fr.MatD3mons.BloodyMurder.utile.util;
@@ -43,7 +44,7 @@ public class PlayerPickupItem implements Listener {
                 b.getPlayerInstance().getInventory().setItem(8, itemStack);
             }
             p.playSound(p.getLocation(), Sound.MAGMACUBE_JUMP, 2F, 1F);
-            GameManager.differentrole.get(b.getRole()).take(b);
+            Roles.PlayerRoles.get(b.getRole()).take(b);
             Repository.findBloodyPlayer(p).addGold();
         }
         Bukkit.getScheduler().scheduleSyncDelayedTask(BloodyMurder.instance, () -> {

@@ -11,7 +11,7 @@ public class EntityDamageByEntity implements Listener {
     @EventHandler
     public void onPlayerHitEvent( org.bukkit.event.entity.EntityDamageByEntityEvent e) {
         if(Hit(e))
-            for (Role r : GameManager.differentrole.values())
+            for (Role r : Roles.PlayerRoles.values())
                 if (r.EntityDamageByEntity(e))
                     return;
         e.setCancelled(true);

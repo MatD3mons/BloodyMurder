@@ -17,4 +17,6 @@ public abstract class Role {
 
     public abstract void Interact(BloodyPlayer b);
 
+    public abstract void death(BloodyPlayer b);
+
 }
