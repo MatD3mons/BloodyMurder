@@ -2,6 +2,7 @@ package fr.MatD3mons.BloodyMurder.Event;
 
 import fr.MatD3mons.BloodyMurder.BloodyMurder;
 import fr.MatD3mons.BloodyMurder.Game.Game;
+import fr.MatD3mons.BloodyMurder.Game.GameManager;
 import fr.MatD3mons.BloodyMurder.GameComponents.BloodyPlayer;
 import fr.MatD3mons.BloodyMurder.utile.Repository;
 import fr.MatD3mons.BloodyMurder.utile.util;
@@ -23,38 +24,34 @@ public class PlayerPickupItem implements Listener {
     public void onPick(PlayerPickupItemEvent e) {
         Player p = e.getPlayer();
         ItemStack itemDrop = e.getItem().getItemStack();
-        if (Repository.BloodyPlayerContains(p)) {
-            BloodyPlayer b = Repository.findBloodyPlayer(p);
-            if (b.getGame() != null) {
-                if (b.getGame().getMode() == Game.GameMode.GAME) {
-                    if (itemDrop.getType() == Material.GOLD_INGOT) {
-                        for (int y = 0; y < e.getItem().getItemStack().getAmount(); y++) {
-                            if (b.getPlayerInstance().getInventory().contains(Material.GOLD_INGOT)) {
-                                for (int i = 0; i < b.getPlayerInstance().getInventory().getSize(); i++) {
-                                    if (b.getPlayerInstance().getInventory().getItem(i) != null)
-                                        if (b.getPlayerInstance().getInventory().getItem(i).getType() == Material.GOLD_INGOT) {
-                                            ItemStack itemStack = util.create(Material.GOLD_INGOT, 1, ChatColor.AQUA, "Or");
-                                            b.getPlayerInstance().getInventory().addItem(itemStack);
-                                        }
-                                }
-                            } else {
-                                ItemStack itemStack = util.create(Material.GOLD_INGOT, 1, ChatColor.AQUA, "Or");
-                                b.getPlayerInstance().getInventory().setItem(8, itemStack);
-                            }
-                            p.playSound(p.getLocation(), Sound.MAGMACUBE_JUMP, 2F, 1F);
-                            b.getRole().take(b);
-                            Repository.findBloodyPlayer(p).addGold();
+        if (!(Repository.BloodyPlayerContains(p))) { return; }
+        BloodyPlayer b = Repository.findBloodyPlayer(p);
+        if (b.getGame() == null) { return; }
+        if (b.getGame().getMode() != Game.GameMode.GAME) { return; }
+        if (itemDrop.getType() != Material.GOLD_INGOT) { return; }
+        for (int y = 0; y < e.getItem().getItemStack().getAmount(); y++) {
+            if (b.getPlayerInstance().getInventory().contains(Material.GOLD_INGOT)) {
+                for (int i = 0; i < b.getPlayerInstance().getInventory().getSize(); i++) {
+                    if (b.getPlayerInstance().getInventory().getItem(i) != null)
+                        if (b.getPlayerInstance().getInventory().getItem(i).getType() == Material.GOLD_INGOT) {
+                            ItemStack itemStack = util.create(Material.GOLD_INGOT, 1, ChatColor.AQUA, "Or");
+                            b.getPlayerInstance().getInventory().addItem(itemStack);
                         }
-                        Bukkit.getScheduler().scheduleSyncDelayedTask(BloodyMurder.instance, () -> {
-                            for(int i = 0; i < 20; i++) {
-                                while (p.getInventory().contains(new ItemStack(Material.GOLD_INGOT, i))) {
-                                    p.getInventory().removeItem(new ItemStack(Material.GOLD_INGOT, i));
-                                }
-                            }
-                        });
-                    }
+                }
+            } else {
+                ItemStack itemStack = util.create(Material.GOLD_INGOT, 1, ChatColor.AQUA, "Or");
+                b.getPlayerInstance().getInventory().setItem(8, itemStack);
+            }
+            p.playSound(p.getLocation(), Sound.MAGMACUBE_JUMP, 2F, 1F);
+            GameManager.differentrole.get(b.getRole()).take(b);
+            Repository.findBloodyPlayer(p).addGold();
+        }
+        Bukkit.getScheduler().scheduleSyncDelayedTask(BloodyMurder.instance, () -> {
+            for (int i = 0; i < 20; i++) {
+                while (p.getInventory().contains(new ItemStack(Material.GOLD_INGOT, i))) {
+                    p.getInventory().removeItem(new ItemStack(Material.GOLD_INGOT, i));
                 }
             }
-        }
+        });
     }
 }

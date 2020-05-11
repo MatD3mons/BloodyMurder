@@ -9,11 +9,10 @@ public class InventoryClickEvent implements Listener {
 
     @EventHandler
     public void OnClick(org.bukkit.event.inventory.InventoryClickEvent e){
-        if(e.getWhoClicked() instanceof Player){
-            Player p = (Player) e.getWhoClicked();
-            if(p.getGameMode() != GameMode.CREATIVE){
-                e.setCancelled(true);
-            }
+        if(!(e.getWhoClicked() instanceof Player)){return;}
+        Player p = (Player) e.getWhoClicked();
+        if(p.getGameMode() != GameMode.CREATIVE){
+            e.setCancelled(true);
         }
     }
 }

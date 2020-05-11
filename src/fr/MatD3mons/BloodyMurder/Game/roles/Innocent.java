@@ -1,5 +1,8 @@
-package fr.MatD3mons.BloodyMurder.Game;
+package fr.MatD3mons.BloodyMurder.Game.roles;
 
+import fr.MatD3mons.BloodyMurder.Game.Game;
+import fr.MatD3mons.BloodyMurder.Game.Role;
+import fr.MatD3mons.BloodyMurder.Game.Roles;
 import fr.MatD3mons.BloodyMurder.GameComponents.BloodyPlayer;
 import fr.MatD3mons.BloodyMurder.utile.Repository;
 import fr.MatD3mons.BloodyMurder.utile.util;
@@ -10,13 +13,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Arrays;
+public class Innocent extends Role {
 
-public class Innocent extends role {
-
-    public Innocent(){
-        super(false);
-    }
+    public Innocent(){ }
 
     @Override
     public boolean EntityDamageByEntity(EntityDamageByEntityEvent e) {
@@ -25,18 +24,18 @@ public class Innocent extends role {
         if(!(fleche.getShooter() instanceof Player)){return false;}
         Player killer = (Player) fleche.getShooter();
         if (Repository.findBloodyPlayer(killer).getGame() == null) {return false;}
-        if (!(Repository.findBloodyPlayer(killer).getRole() == roles.Innocent)){return false;}
+        if (!(Repository.findBloodyPlayer(killer).getRole() == Roles.Innocent)){return false;}
         Game g = Repository.findBloodyPlayer(killer).getGame();
         if (g.getMode() != Game.GameMode.GAME) { return false;}
         Player p2 = (Player) e.getEntity();
-        if (Repository.findBloodyPlayer(p2).getRole() == roles.Murder) {
+        if (Repository.findBloodyPlayer(p2).getRole() == Roles.Murder) {
             p2.getInventory().clear();
             e.setDamage(100);
             Repository.findBloodyPlayer(killer).addkills();
             Repository.findBloodyPlayer(p2).adddeaths();
             g.supMurder(Repository.findBloodyPlayer(p2));
             if (g.murderleftsixe() <= 0) {
-                g.setEnd(GameManager.differentrole.get(roles.Murder));
+                g.setEnd(Roles.Innocent);
             } else {
                 util.sendTitle(killer, "", "§a§lil reste: §b§l" + (g.murderleftsixe()) + " §a§lMurder", 0, 3, 0);
             }

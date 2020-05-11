@@ -2,10 +2,6 @@ package fr.MatD3mons.BloodyMurder.Game;
 
 import fr.MatD3mons.BloodyMurder.BloodyMurder;
 import fr.MatD3mons.BloodyMurder.GameComponents.BloodyPlayer;
-import fr.MatD3mons.BloodyMurder.ScoreBoard.ScoreBoardDisplayer;
-import fr.MatD3mons.BloodyMurder.ScoreBoard.ScoreboardUtil;
-import fr.MatD3mons.BloodyMurder.ScoreBoard.ScoreboardWrapper;
-import fr.MatD3mons.BloodyMurder.utile.Repository;
 import fr.MatD3mons.BloodyMurder.utile.util;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
@@ -14,7 +10,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.NameTagVisibility;
 import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.scoreboard.Team;
 
 import java.util.ArrayList;
@@ -27,11 +22,11 @@ public class Game {
     private ArrayList<BloodyPlayer> innocentleft;
     private ArrayList<BloodyPlayer> murderleft;
     private ArrayList<Location> listor;
-    private ArrayList<role> listrole;
+    private ArrayList<Roles> listrole;
     private HashMap<Player,Team> listTeam;
     private Scoreboard scoreboard;
     private GameMode mode;
-    private role role;
+    private Roles role;
     private int limite;
     private int timer;
     private String name;
@@ -131,48 +126,44 @@ public class Game {
         return  limite;
     }
 
-    public void rejoind(BloodyPlayer b){
-        if(getSixe() < getLimite()) {
-            if(!playerInGame.contains(b)) {
-                playerInGame.add(b);
-
-                b.setGame(this);
-            Message(b.getPlayerInstance().getName()+" a rejoint la partie ("+playerInGame.size()+"/"+limite+") ");
-            }
-            Player p = b.playerInstance;
-            p.setGameMode(org.bukkit.GameMode.ADVENTURE);
-            p.teleport(this.spawn);
-            ItemStack itemStack = util.create(Material.BED,1,ChatColor.RED,"Lobby");
-            b.getPlayerInstance().getInventory().setItem(8,itemStack);
-            if(getMode() == GameMode.DISABLE) {
-                setWait();
-                util.sendTitle(b, " ", "§a§lVous avez démarré la partie", 0, 3, 0);
-            }
-            else if(getMode() == GameMode.WAITING){
-                util.sendTitle(b, " ", "§a§lVous avez rejoint la partie", 0, 3, 0);
-            }
-            else{
-                p.setGameMode(org.bukkit.GameMode.SPECTATOR);
-                util.sendTitle(b, " ", "§a§lVous avec rejoint en mode spectateur", 0, 3, 0);
-            }
-        }
-        else{
+    public void rejoind(BloodyPlayer b) {
+        if (getSixe() > getLimite()) {
             util.sendTitle(b, " ", "§a§lPas assez de place dans la game", 0, 3, 0);
+            return;
+        }
+        if (!playerInGame.contains(b)) {
+            playerInGame.add(b);
+            b.setGame(this);
+            Message(b.getPlayerInstance().getName() + " a rejoint la partie (" + playerInGame.size() + "/" + limite + ") ");
+        }
+        Player p = b.playerInstance;
+        p.setGameMode(org.bukkit.GameMode.ADVENTURE);
+        p.teleport(this.spawn);
+        ItemStack itemStack = util.create(Material.BED, 1, ChatColor.RED, "Lobby");
+        b.getPlayerInstance().getInventory().setItem(8, itemStack);
+        if (getMode() == GameMode.DISABLE) {
+            setWait();
+            util.sendTitle(b, " ", "§a§lVous avez démarré la partie", 0, 3, 0);
+        } else if (getMode() == GameMode.WAITING) {
+            util.sendTitle(b, " ", "§a§lVous avez rejoint la partie", 0, 3, 0);
+        } else {
+            p.setGameMode(org.bukkit.GameMode.SPECTATOR);
+            util.sendTitle(b, " ", "§a§lVous avec rejoint en mode spectateur", 0, 3, 0);
         }
     }
 
     public void leave(BloodyPlayer b){
         if(b.getGame().mode == GameMode.GAME) {
             if (b.getRole() != null) {
-                if (!b.getRole().getmechant())
+                if (!(b.getRole() == Roles.Murder))
                     supMurder(b);
                 else
                     supInnocent(b);
                 if (murderleft.size() == 0) {
-                    setEnd(new Innocent());
+                    setEnd(Roles.Innocent);
                 }
                 if (innocentleft.size() == 0) {
-                    setEnd(new Murder());
+                    setEnd(Roles.Murder);
                 }
                 resetTeam(b.getPlayerInstance());
             }
@@ -299,173 +290,22 @@ public class Game {
             mode = GameMode.GAME;
             listrole.clear();
             switch (playerInGame.size()) {
-                case 1:
-                    listrole.add(new Murder());
-                    break;
-                case 2:
-                    listrole.add(new Murder());
-                    listrole.add(new Innocent());
-                    break;
-                case 3:
-                    listrole.add(new Murder());
-                    listrole.add(new Innocent());
-                    listrole.add(new Murder());
-                    break;
-                case 4:
-                    listrole.add(new Murder());
-                    listrole.add(new Murder());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    break;
-                case 5:
-                    listrole.add(new Murder());
-                    listrole.add(new Murder());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    break;
-                case 6:
-                    listrole.add(new Murder());
-                    listrole.add(new Murder());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    break;
-                case 7:
-                    listrole.add(new Murder());
-                    listrole.add(new Murder());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    break;
                 case 8:
-                    listrole.add(new Murder());
-                    listrole.add(new Murder());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    break;
-                case 9:
-                    listrole.add(new Murder());
-                    listrole.add(new Murder());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    break;
-                case 10:
-                    listrole.add(new Murder());
-                    listrole.add(new Murder());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    break;
-                case 11:
-                    listrole.add(new Murder());
-                    listrole.add(new Murder());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    break;
-                case 12:
-                    listrole.add(new Murder());
-                    listrole.add(new Murder());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    break;
-                case 13:
-                    listrole.add(new Murder());
-                    listrole.add(new Murder());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    break;
-                case 14:
-                    listrole.add(new Murder());
-                    listrole.add(new Murder());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    break;
-                case 15:
-                    listrole.add(new Murder());
-                    listrole.add(new Murder());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    break;
-                case 16:
-                    listrole.add(new Murder());
-                    listrole.add(new Murder());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
-                    listrole.add(new Innocent());
+                    listrole.add(Roles.Murder);
+                case 7:
+                    listrole.add(Roles.Innocent);
+                case 6:
+                    listrole.add(Roles.Innocent);
+                case 5:
+                    listrole.add(Roles.Innocent);
+                case 4:
+                    listrole.add(Roles.Innocent);
+                case 3:
+                    listrole.add(Roles.Innocent);
+                case 2:
+                    listrole.add(Roles.Innocent);
+                case 1:
+                    listrole.add(Roles.Murder);
                     break;
                 default:
                     for (BloodyPlayer b : playerInGame) {
@@ -476,14 +316,14 @@ public class Game {
             ArrayList<Integer> random = util.randomlist(playerInGame.size());
             for (int i = 0; i < playerInGame.size(); i++) {
                 playerInGame.get(i).setRole(listrole.get(random.get(i)));
-                if (listrole.get(random.get(i)).getmechant()) {
+                if (listrole.get(random.get(i)) == Roles.Murder) {
                     murderleft.add(playerInGame.get(i));
                 } else {
                     innocentleft.add(playerInGame.get(i));
                 }
             }
             for (BloodyPlayer b : playerInGame) {
-                b.getRole().message(b);
+                Roles.PlayerRoles.get(b.getRole()).message(b);
                 b.getPlayerInstance().getInventory().clear();
             }
 
@@ -493,7 +333,7 @@ public class Game {
                 public void run() {
                     if (timer == 115) {
                         for (BloodyPlayer b : playerInGame) {
-                            b.getRole().stuff(b);
+                            Roles.PlayerRoles.get(b.getRole()).stuff(b);
                         }
                     }
                     if (timer % 10 == 0) {
@@ -510,7 +350,7 @@ public class Game {
                         }
                     }
                     if (timer < 0) {
-                        setEnd(new Innocent());
+                        setEnd(Roles.Innocent);
                         cancel();
                     } else {
                         if (mode == GameMode.GAME) {
@@ -524,7 +364,7 @@ public class Game {
         }
     }
 
-    public void setEnd(role r) {
+    public void setEnd(Roles r) {
         if (mode != GameMode.END) {
             mode = GameMode.END;
             this.role = r;
@@ -533,7 +373,7 @@ public class Game {
                     e.remove();
             }
             for (BloodyPlayer b : playerInGame) {
-                r.fin(b);
+                Roles.PlayerRoles.get(r).fin(b);
                 resetTeam(b.getPlayerInstance());
                 ItemStack itemStack = util.create(Material.BED,1,ChatColor.RED,"Lobby");
                 b.getPlayerInstance().getInventory().setItem(8,itemStack);

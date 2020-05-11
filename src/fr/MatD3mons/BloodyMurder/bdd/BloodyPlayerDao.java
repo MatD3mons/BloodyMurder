@@ -53,10 +53,7 @@ public class BloodyPlayerDao implements Dao<UUID, BloodyPlayer> {
                 e.printStackTrace();
             }
         }
-        Player player = Bukkit.getPlayer(key);
-        BloodyPlayer bloodyPlayer = get(key);
-        Repository.players.put(player, bloodyPlayer);
-        return bloodyPlayer;
+        return get(key);
     }
 
     @Override
@@ -66,14 +63,13 @@ public class BloodyPlayerDao implements Dao<UUID, BloodyPlayer> {
 
     @Override
     public BloodyPlayer get(UUID key) {
-        BloodyPlayer bloodyPlayer = null;
+        BloodyPlayer bloodyPlayer = new BloodyPlayer(Bukkit.getPlayer(key));
         try (Connection con = DataSourceFactory.getDataSource().getConnection();
              PreparedStatement ps = con.prepareStatement("SELECT * FROM "+TABLE_NAME+" WHERE uuid = ?"))
         {
             ps.setString(1, Bukkit.getPlayer(key).getUniqueId().toString());
             try(ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    bloodyPlayer = new BloodyPlayer(Bukkit.getPlayer(key));
                     bloodyPlayer.setStatut(
                             rs.getInt(2),
                             rs.getInt(3),

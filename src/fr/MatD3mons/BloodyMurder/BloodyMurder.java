@@ -7,6 +7,7 @@ import fr.MatD3mons.BloodyMurder.Event.*;
 import fr.MatD3mons.BloodyMurder.Game.GameManager;
 import fr.MatD3mons.BloodyMurder.ScoreBoard.ScoreBoardDisplayer;
 import fr.MatD3mons.BloodyMurder.bdd.BloodyPlayerDao;
+import fr.MatD3mons.BloodyMurder.utile.Repository;
 import net.minecraft.server.v1_8_R3.EntityArmorStand;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -38,6 +39,7 @@ public class BloodyMurder extends JavaPlugin {
         stands = new HashMap<>();
         perms = new HashMap<UUID, PermissionAttachment>();
         bloodyPlayerDao = new BloodyPlayerDao();
+        Repository.Update();
         cmdBase = new CmdBase();
         this.getCommand("BloodyMurder").setExecutor(cmdBase);
         this.getCommand("BloodyMurder").setTabCompleter(this);

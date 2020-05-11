@@ -37,7 +37,6 @@ public class PlayerJoinEvent implements Listener {
         p.teleport(GameManager.spawn);
         p.getInventory().clear();
         p.playSound(p.getLocation(), Sound.CLICK, 2F, 1F);
-        Repository.players.put(p,new BloodyPlayer(p));
-        BloodyMurder.bloodyPlayerDao.create(p.getUniqueId());
+        Repository.add(p);
     }
 }

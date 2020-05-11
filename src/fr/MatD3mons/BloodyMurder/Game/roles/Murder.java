@@ -1,19 +1,24 @@
-package fr.MatD3mons.BloodyMurder.Game;
+package fr.MatD3mons.BloodyMurder.Game.roles;
 
+import fr.MatD3mons.BloodyMurder.Game.Game;
+import fr.MatD3mons.BloodyMurder.Game.Role;
+import fr.MatD3mons.BloodyMurder.Game.Roles;
 import fr.MatD3mons.BloodyMurder.GameComponents.BloodyPlayer;
 import fr.MatD3mons.BloodyMurder.utile.Repository;
 import fr.MatD3mons.BloodyMurder.utile.util;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.EulerAngle;
 
-public class Murder extends role {
+public class Murder extends Role {
 
-    public Murder(){
-        super(true);
-    }
+    public Murder(){}
 
     @Override
     public boolean EntityDamageByEntity(EntityDamageByEntityEvent e){
@@ -23,8 +28,8 @@ public class Murder extends role {
         Game g = Repository.findBloodyPlayer(killer).getGame();
         if (g.getMode() != Game.GameMode.GAME) {return false;}
         Player p2 = (Player) e.getEntity();
-        if (Repository.findBloodyPlayer(killer).getRole() == roles.Murder) {
-            if (!(Repository.findBloodyPlayer(p2).getRole() == roles.Murder)){
+        if (Repository.findBloodyPlayer(killer).getRole() == Roles.Murder) {
+            if (!(Repository.findBloodyPlayer(p2).getRole() == Roles.Murder)){
                 if (killer.getItemInHand().getType() == Material.DIAMOND_SWORD) {
                     if (killer.getInventory().contains(Material.RED_SANDSTONE)) {
                         p2.getInventory().clear();
@@ -42,7 +47,7 @@ public class Murder extends role {
                                 }
                         }
                         if (g.innocentleftsixe() <= 0) {
-                            g.setEnd(GameManager.differentrole.get(roles.Innocent));
+                            g.setEnd(Roles.Murder);
                         } else {
                             util.sendTitle(killer, "", "§a§lil reste: §b§l" + (g.innocentleftsixe()) + " §a§linnocents", 0, 3, 0);
                         }
@@ -109,6 +114,10 @@ public class Murder extends role {
     }
 
     public void Interact(BloodyPlayer b){
-
+        Location loc = b.getPlayerInstance().getLocation();
+        ArmorStand stand = (ArmorStand) loc.getWorld().spawnEntity(loc, EntityType.ARMOR_STAND);
+        stand.setArms(true);
+        stand.setRightArmPose(new EulerAngle(5,2,3));
+        stand.setItemInHand(new ItemStack(Material.DIAMOND_SWORD,1));
     }
 }

@@ -13,14 +13,10 @@ import java.util.Set;
 public class GameManager {
 
     public static HashMap<String,Game> games;
-    public static Map<role.roles,role> differentrole;
     public static Location spawn;
 
     public GameManager(){
         games = new HashMap<>();
-        differentrole = new HashMap<>();
-        differentrole.put(role.roles.Murder,new Murder());
-        differentrole.put(role.roles.Innocent,new Innocent());
         spawn = util.setlocation("lobby");
 
         for(String string: BloodyMurder.instance.getConfig().getConfigurationSection("games").getKeys(false)){
@@ -29,7 +25,6 @@ public class GameManager {
             Location l = util.setlocation("games",string);
             games.put(name,new Game(name,l));
         }
-
     }
 
     public static void addgame(String name){

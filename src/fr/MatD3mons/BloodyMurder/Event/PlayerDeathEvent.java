@@ -13,19 +13,18 @@ public class PlayerDeathEvent implements Listener {
 
     @EventHandler
     public void onSpawn(org.bukkit.event.entity.PlayerDeathEvent e) {
-        if (e.getEntity() != null) {
-            Player p = (Player) e.getEntity();
-            p.setHealth(20);
-            p.setFoodLevel(20);
-            if (Repository.findBloodyPlayer(p).getGame() == null) {
-                p.teleport(GameManager.spawn);
-            } else {
-                p.setGameMode(GameMode.SPECTATOR);
-                p.teleport(Repository.findBloodyPlayer(p).getGame().spawn);
-            }
-            p.spigot().respawn();
-            e.setDroppedExp(1);
-            e.getDrops().clear();
+        if (e.getEntity() == null) { return; }
+        Player p = (Player) e.getEntity();
+        p.setHealth(20);
+        p.setFoodLevel(20);
+        if (Repository.findBloodyPlayer(p).getGame() == null) {
+            p.teleport(GameManager.spawn);
+        } else {
+            p.setGameMode(GameMode.SPECTATOR);
+            p.teleport(Repository.findBloodyPlayer(p).getGame().spawn);
         }
+        p.spigot().respawn();
+        e.setDroppedExp(1);
+        e.getDrops().clear();
     }
 }
