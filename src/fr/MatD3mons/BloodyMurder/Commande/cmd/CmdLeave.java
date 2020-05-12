@@ -6,17 +6,16 @@ import fr.MatD3mons.BloodyMurder.Commande.Context;
 import fr.MatD3mons.BloodyMurder.Game.GameManager;
 import fr.MatD3mons.BloodyMurder.GameComponents.BloodyPlayer;
 
-public class CmdSetor extends Cmd {
+public class CmdLeave extends Cmd {
 
-    public CmdSetor() {
+    public CmdLeave() {
         super();
-        this.aliases.addAll(Aliases.setor);
+        this.aliases.addAll(Aliases.Leave);
     }
 
     @Override
     public void perform(Context context) {
         BloodyPlayer b = context.bloodyPlayer;
-        if (context.args.get(1) != null)
-            GameManager.setor(b, context.args.get(1));
+        GameManager.leave(b);
     }
 }

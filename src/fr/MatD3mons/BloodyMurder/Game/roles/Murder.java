@@ -70,7 +70,7 @@ public class Murder extends Role {
 
     @Override
     public void stuff(BloodyPlayer b){
-        ItemStack itemStack = util.create(Material.DIAMOND_SWORD,1,ChatColor.AQUA,"Epée du Murder");
+        ItemStack itemStack = util.create(Material.DIAMOND_SWORD,1,ChatColor.AQUA,"§lEpée du §6§lMurder");
         b.getPlayerInstance().getInventory().setItem(0,itemStack);
     }
 
@@ -121,7 +121,7 @@ public class Murder extends Role {
             @Override
             public void run() {
                 timer--;
-                util.sendActionBar(b.getPlayerInstance(),"§aCooldown épée : §8"+timer);
+                util.sendActionBar(b.getPlayerInstance(),"§aCooldown épée : §7§l"+timer);
                 if(timer  <= 0) {
                     timer = 6;
                     cancel();

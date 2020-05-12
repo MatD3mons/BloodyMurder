@@ -12,13 +12,17 @@ permissions:
     description: give players access to use check commands
   BloodyMurder.Join:
     description: give players access to use check commands
-  BloodyMurder.Lobby:
+  BloodyMurder.Leave:
     description: give players access to use check commands
   BloodyMurder.SetEnd:
     description: give players access to use check commands
   BloodyMurder.SetGame:
     description: give players access to use check commands
-  BloodyMurder.SetOr:
+  BloodyMurder.AddOr:
+    description: give players access to use check commands
+  BloodyMurder.AddSpawn:
     description: give players access to use check commands
   BloodyMurder.SetWait:
+    description: give players access to use check commands
+  BloodyMurder.Create:
     description: give players access to use check commands

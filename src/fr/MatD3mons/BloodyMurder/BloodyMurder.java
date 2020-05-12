@@ -18,7 +18,6 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class BloodyMurder extends JavaPlugin {
 
@@ -72,34 +71,12 @@ public class BloodyMurder extends JavaPlugin {
         List<String> argsList = new LinkedList<>(Arrays.asList(args));
         Context context = new Context(sender, argsList, alias);
         List<Cmd> commandsList = cmdBase.subCommands;
-        Cmd commandsEx = cmdBase;
         List<String> completions = new ArrayList<>();
         // Check for "" first arg because spigot is mangled.
         if (context.args.get(0).equals("")) {
-            for (Cmd subCommand : commandsEx.subCommands) {
+            for (Cmd subCommand : commandsList) {
                 completions.addAll(subCommand.aliases);
             }
-            return completions;
-        } else if (context.args.size() == 1) {
-            for (; !commandsList.isEmpty() && !context.args.isEmpty(); context.args.remove(0)) {
-                String cmdName = context.args.get(0).toLowerCase();
-                boolean toggle = false;
-                for (Cmd fCommand : commandsList) {
-                    for (String s : fCommand.aliases) {
-                        if (s.startsWith(cmdName)) {
-                            commandsList = fCommand.subCommands;
-                            completions.addAll(fCommand.aliases);
-                            toggle = true;
-                            break;
-                        }
-                    }
-                    if (toggle) break;
-                }
-            }
-            String lastArg = args[args.length - 1].toLowerCase();
-            completions = completions.stream()
-                    .filter(m -> m.toLowerCase().startsWith(lastArg))
-                    .collect(Collectors.toList());
         }
         return completions;
     }

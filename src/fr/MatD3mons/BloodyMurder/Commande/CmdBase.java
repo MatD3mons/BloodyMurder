@@ -11,23 +11,29 @@ public class CmdBase extends Cmd implements CommandExecutor {
 
     public static CmdBase instance;
     public CmdJoin cmdJoin = new CmdJoin();
-    public CmdLobby cmdLobby = new CmdLobby();
+    public CmdLeave cmdLeave = new CmdLeave();
     public CmdHelp cmdHelp = new CmdHelp();
     public CmdSetEnd cmdSetEnd = new CmdSetEnd();
     public CmdSetGame cmdSetGame = new CmdSetGame();
     public CmdsetWait cmdsetWait = new CmdsetWait();
-    public CmdSetor cmdSetor = new CmdSetor();
+    public CmdAddOr cmdAddor = new CmdAddOr();
+    public CmdCreate cmdCreate = new CmdCreate();
+    public CmdSetLobby cmdSetLobby = new CmdSetLobby();
+    public CmdAddSpawn cmdAddSpawn = new CmdAddSpawn();
 
     public CmdBase() {
         super();
         instance = this;
         this.addSubCommand(this.cmdJoin);
-        this.addSubCommand(this.cmdLobby);
+        this.addSubCommand(this.cmdLeave);
         this.addSubCommand(this.cmdHelp);
         this.addSubCommand(this.cmdSetEnd);
         this.addSubCommand(this.cmdSetGame);
         this.addSubCommand(this.cmdsetWait);
-        this.addSubCommand(this.cmdSetor);
+        this.addSubCommand(this.cmdAddor);
+        this.addSubCommand(this.cmdCreate);
+        this.addSubCommand(this.cmdSetLobby);
+        this.addSubCommand(this.cmdAddSpawn);
     }
 
     @Override

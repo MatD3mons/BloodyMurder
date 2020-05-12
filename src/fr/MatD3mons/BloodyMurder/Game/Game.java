@@ -12,16 +12,16 @@ import org.bukkit.scoreboard.NameTagVisibility;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class Game {
 
+    private Game instance;
     private ArrayList<BloodyPlayer> playerInGame;
     private ArrayList<BloodyPlayer> innocentleft;
     private ArrayList<BloodyPlayer> murderleft;
     private ArrayList<Location> listor;
+    private ArrayList<Location> listspawn;
     private ArrayList<Roles> listrole;
     private HashMap<Player,Team> listTeam;
     private Scoreboard scoreboard;
@@ -31,58 +31,69 @@ public class Game {
     private int timer;
     private String name;
     public Location spawn;
-    public World world;
 
     public ArrayList<BloodyPlayer> getPlayerInGame() {
         return playerInGame;
     }
 
-    public void setor(Player p) {
+    public void addor(Player p) {
         Location l = p.getLocation();
-        List<String> list;
-        if(BloodyMurder.instance.getConfig().getStringList("games."+name+".or") != null)
-            list = BloodyMurder.instance.getConfig().getStringList("games."+name+".or");
-        else
-            list = new ArrayList<>();
         String s = (int)l.getX()+","+(int)(l.getY()+1)+","+(int)l.getZ();
-        list.add(s);
         p.sendMessage("§eNouveau spawn d'or définie en: "+s);
-        String[] cordonee = s.split(",");
-        addLocationor(cordonee);
-        BloodyMurder.instance.getConfig().set("games."+name+".or", list);
+        listor.add(p.getLocation().clone());
+        BloodyMurder.instance.getConfig().set("games."+name+".or", listor);
         BloodyMurder.instance.saveConfig();
     }
 
-    public static enum GameMode {
+    public void addspawn(Player player) {
+        Location l = player.getLocation();
+        String s = (int)l.getX()+","+(int)(l.getY()+1)+","+(int)l.getZ();
+        player.sendMessage("§eNouveau spawn définie en: "+s);
+        listspawn.add(player.getLocation().clone());
+        BloodyMurder.instance.getConfig().set("games."+instance.toString()+".spawn", listspawn);
+        BloodyMurder.instance.saveConfig();
+    }
+
+    public void setLobby(Player player) {
+        Location l = player.getLocation();
+        String s = (int)l.getX()+","+(int)(l.getY()+1)+","+(int)l.getZ();
+        player.sendMessage("§eNouveau lobby définie en: "+s);
+        listspawn.add(player.getLocation().clone());
+        BloodyMurder.instance.getConfig().set("games."+instance.toString()+".lobby", spawn);
+        BloodyMurder.instance.saveConfig();
+    }
+
+    public enum GameMode {
         DISABLE,WAITING, GAME, END
     }
 
-    public Game(String name,Location location){
+    public Game(String name){
+        this.instance = this;
         playerInGame = new ArrayList<>();
         innocentleft = new ArrayList<>();
         murderleft = new ArrayList<>();
         listor = new ArrayList<>();
+        listspawn = new ArrayList<>();
         listrole = new ArrayList<>();
         listTeam = new HashMap<>();
         limite = 8;
         this.name = name;
         role = null;
         setDisable();
-        spawn = location;;
-        world = location.getWorld();
-        for(String string: BloodyMurder.instance.getConfig().getStringList("games."+name+".or")){
-            String[] cordonee = string.split(",");
-            addLocationor(cordonee);
-        }
-    }
 
-    public void addLocationor(String[] s){
-        int x = Integer.parseInt(s[0]);
-        int y = Integer.parseInt(s[1]);
-        int z = Integer.parseInt(s[2]);
-        listor.add(new Location(world,x,y,z));
-    }
+        if(BloodyMurder.instance.getConfig().getStringList("games."+name+".or") != null)
+            listor = util.returnLocation(BloodyMurder.instance.getConfig().getStringList("games."+name+".or"));
 
+        if(BloodyMurder.instance.getConfig().getStringList("games."+name+".spawn") != null)
+            listspawn = util.returnLocation(BloodyMurder.instance.getConfig().getStringList("games."+name+".or"));
+
+        System.out.println("--------");
+        System.out.println(BloodyMurder.instance.getConfig().getString("games."+name+".lobby"));
+        if(BloodyMurder.instance.getConfig().getString("games."+name+".lobby") != null)
+            spawn = util.returnLocation(BloodyMurder.instance.getConfig().getString("games."+name+".lobby"));
+
+        System.out.println(spawn);
+    }
 
     @Deprecated
     public void setTeam(Player p) {
@@ -138,7 +149,7 @@ public class Game {
         if (!playerInGame.contains(b)) {
             playerInGame.add(b);
             b.setGame(this);
-            Message("§d§l"+b.getPlayerInstance().getName() + "§a§l a rejoint la partie. §7(§8§l" + playerInGame.size() + "§7/§8" + limite + "§7) ");
+            Message("§d§l"+b.getPlayerInstance().getName() + "§a§l a rejoint la partie. §8(§7" + playerInGame.size() + "§8/§7" + limite + "§8) ");
         }
         Player p = b.playerInstance;
         p.setGameMode(org.bukkit.GameMode.ADVENTURE);
@@ -177,7 +188,7 @@ public class Game {
         b.setGame(null);
         Message(b.getPlayerInstance().getName()+" a quitter la partie ("+playerInGame.size()+"/"+limite+") ");
         util.sendTitle(b, " ", "§a§lVous quiter la partie", 0, 3, 0);
-        b.getPlayerInstance().teleport(GameManager.spawn);
+        b.getPlayerInstance().teleport(GameManager.lobby);
         if(playerInGame.size() == 0)
             setDisable();
     }
@@ -222,7 +233,7 @@ public class Game {
             role = null;
             murderleft.clear();
             timer = 20;
-            for (Entity e : world.getEntities()) {
+            for (Entity e : this.spawn.getWorld().getEntities()) {
                 if (!(e instanceof Player)) {
                     e.remove();
                 }
@@ -262,7 +273,7 @@ public class Game {
                         }
                     if (timer < 0) {
                         if (playerInGame.size() >= 1) {
-                            Message("§a§lLa partie commence, bonne chance !");
+                            util.sendActionBar(instance,"§a§lLa partie commence, bonne chance !");
                             setGame();
                             cancel();
                         } else {
@@ -271,7 +282,7 @@ public class Game {
                         }
                     } else {
                         if (mode == GameMode.WAITING) {
-                            if (playerInGame.size() >= 1) {
+                            if (playerInGame.size() >= 1) {//TODO mettre +
                                 timer--;
                             }
                             else if(playerInGame.size() == 0){
@@ -343,13 +354,13 @@ public class Game {
                     if (timer % 10 == 0) {
                         for (Location loc : listor) {
                             Boolean libre = true;
-                            for (Entity e : world.getEntities())
+                            for (Entity e : spawn.getWorld().getEntities())
                                 if (e.getLocation().distance(loc) <= 5) {
                                     libre = false;
                                 }
                             if (libre) {
-                                world.dropItem(loc, new ItemStack(Material.GOLD_INGOT, 1));
-                                world.playSound(loc, Sound.FIRE, 2F, 1F);
+                                spawn.getWorld().dropItem(loc, new ItemStack(Material.GOLD_INGOT, 1));
+                                spawn.getWorld().playSound(loc, Sound.FIRE, 2F, 1F);
                             }
                         }
                     }
@@ -372,7 +383,7 @@ public class Game {
         if (mode != GameMode.END) {
             mode = GameMode.END;
             this.role = r;
-            for (Entity e : world.getEntities()) {
+            for (Entity e : spawn.getWorld().getEntities()) {
                 if (!(e instanceof Player))
                     e.remove();
             }

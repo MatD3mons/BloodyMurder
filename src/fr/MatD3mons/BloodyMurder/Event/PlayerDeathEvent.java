@@ -23,7 +23,7 @@ public class PlayerDeathEvent implements Listener {
         if(!(Repository.BloodyPlayerContains(p))){return;}
         BloodyPlayer b = Repository.findBloodyPlayer(p);
         if (b.getGame() == null) {
-            p.teleport(GameManager.spawn);
+            p.teleport(GameManager.lobby);
         } else {
             if(b.getGame().getMode() == Game.GameMode.GAME)
                 Roles.PlayerRoles.get(b.getRole()).death(b);

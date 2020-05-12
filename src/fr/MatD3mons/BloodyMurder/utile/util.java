@@ -67,19 +67,19 @@ public class util {
 		return new_list;
 	}
 
-    public static Location setlocation(String s) {
-		World w = Bukkit.getWorld(BloodyMurder.instance.getConfig().getString(s+".world"));
-		int x = BloodyMurder.instance.getConfig().getInt( s+".x");
-		int y = BloodyMurder.instance.getConfig().getInt( s+".y");
-		int z = BloodyMurder.instance.getConfig().getInt(s+".z");
+	public static Location returnLocation(String s){
+		String[] split = s.split(",");
+		int x = Integer.parseInt(split[0]);
+		int y = Integer.parseInt(split[1]);
+		int z = Integer.parseInt(split[2]);
+		World w = Bukkit.getWorld(split[3]);
 		return new Location(w,x,y,z);
-    }
+	}
 
-    public static Location setlocation(String chemin, String s){
-		World w = Bukkit.getWorld(BloodyMurder.instance.getConfig().getConfigurationSection(chemin).getString(s+".world"));
-		int x = BloodyMurder.instance.getConfig().getConfigurationSection(chemin).getInt( s+".x");
-		int y = BloodyMurder.instance.getConfig().getConfigurationSection(chemin).getInt( s+".y");
-		int z = BloodyMurder.instance.getConfig().getConfigurationSection(chemin).getInt(s+".z");
-		return new Location(w,x,y,z);
+	public static ArrayList<Location> returnLocation(List<String> stringList) {
+		ArrayList<Location> list = new ArrayList<>();
+		for (String s: stringList)
+			list.add(returnLocation(s));
+		return list;
 	}
 }

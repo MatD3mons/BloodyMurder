@@ -34,7 +34,7 @@ public class PlayerJoinEvent implements Listener {
         p.removePotionEffect(PotionEffectType.DAMAGE_RESISTANCE);
         p.setHealth(20);
         p.setFoodLevel(20);
-        p.teleport(GameManager.spawn);
+        p.teleport(GameManager.lobby);
         p.getInventory().clear();
         p.playSound(p.getLocation(), Sound.CLICK, 2F, 1F);
         Repository.add(p);

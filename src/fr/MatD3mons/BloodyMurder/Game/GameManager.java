@@ -12,23 +12,20 @@ import java.util.Set;
 public class GameManager {
 
     public static HashMap<String,Game> games;
-    public static Location spawn;
+    public static Location lobby;
 
     public GameManager(){
         games = new HashMap<>();
-        spawn = util.setlocation("lobby");
-
-        for(String string: BloodyMurder.instance.getConfig().getConfigurationSection("games").getKeys(false)){
-            System.out.println(string);
-            String name = string;
-            Location l = util.setlocation("games",string);
-            games.put(name,new Game(name,l));
+        lobby = util.returnLocation(BloodyMurder.getInstance().getConfig().getString("lobby"));
+        for(String map: BloodyMurder.instance.getConfig().getConfigurationSection("games").getKeys(false)){
+            games.put(map,new Game(map));
         }
     }
 
     public static void addgame(String name){
         Set<String> list = BloodyMurder.instance.getConfig().getConfigurationSection("games").getKeys(false);
         list.add(name);
+        //TODO ajouter le lobby directement a la création
         BloodyMurder.instance.getConfig().set("games", list);
         BloodyMurder.instance.saveConfig();
     }
@@ -63,18 +60,13 @@ public class GameManager {
                 return;
             }
         }
+        util.sendActionBar(b.getPlayerInstance(),"§a§lAucune parti disponible");
     }
 
     public static void leave(BloodyPlayer b){
         b.getPlayerInstance().getInventory().clear();
         if(b.getGame() != null)
             b.getGame().leave(b);
-        b.getPlayerInstance().teleport(GameManager.spawn);
-    }
-
-    public static void setor(BloodyPlayer b,String monde) {
-        if(games.containsKey(monde)){
-            games.get(monde).setor(b.playerInstance);
-        }
+        b.getPlayerInstance().teleport(GameManager.lobby);
     }
 }
