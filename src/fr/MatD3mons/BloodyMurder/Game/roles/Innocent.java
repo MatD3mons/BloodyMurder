@@ -56,9 +56,9 @@ public class Innocent extends Role {
     public void fin(BloodyPlayer b){
         b.getPlayerInstance().getInventory().clear();
         if(b.getGame().innocentleftsixe() == 1)
-            util.sendTitle(b.getPlayerInstance(), "§a§l L' INNOCENTS a gagné", "", 0, 3, 0);
+            util.sendTitle(b.getGame(), "§a§l L' INNOCENTS a gagné", "", 0, 3, 0);
         else
-            util.sendTitle(b.getPlayerInstance(), "§a§l Les INNOCENTS ont gagné", "", 0, 3, 0);
+            util.sendTitle(b.getGame(), "§a§l Les INNOCENTS ont gagné", "", 0, 3, 0);
     }
 
     @Override
@@ -103,7 +103,7 @@ public class Innocent extends Role {
         if (g.innocentleftsixe() <= 0) {
             g.setEnd(Roles.Murder);
         } else {
-            util.sendTitle(g, "", "§a§lil reste: §b§l" + (g.innocentleftsixe()) + " §a§linnocents", 0, 3, 0);
+            util.sendActionBar(g, "§a§lil reste: §b§l" + (g.innocentleftsixe()) + " §a§linnocents");
         }
     }
 

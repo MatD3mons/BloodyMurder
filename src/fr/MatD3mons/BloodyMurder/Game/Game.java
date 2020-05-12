@@ -138,7 +138,7 @@ public class Game {
         if (!playerInGame.contains(b)) {
             playerInGame.add(b);
             b.setGame(this);
-            Message(b.getPlayerInstance().getName() + " a rejoint la partie (" + playerInGame.size() + "/" + limite + ") ");
+            Message("§d§l"+b.getPlayerInstance().getName() + "§a§l a rejoint la partie. §7(§8§l" + playerInGame.size() + "§7/§8" + limite + "§7) ");
         }
         Player p = b.playerInstance;
         p.setGameMode(org.bukkit.GameMode.ADVENTURE);

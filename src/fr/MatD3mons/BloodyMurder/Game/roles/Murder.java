@@ -45,7 +45,7 @@ public class Murder extends Role {
                 e.setDamage(100);
                 Repository.findBloodyPlayer(killer).addkills();
             } else {
-                util.sendTitle(killer, "", "§c§lC'est ton ally dommage ):", 0, 2, 0);
+                util.sendActionBar(killer, "§c§lC'est ton ally dommage ):");
             }
             for (int i = 0; i < killer.getInventory().getSize(); i++) {
                 if (killer.getInventory().getItem(i) != null)
@@ -78,9 +78,9 @@ public class Murder extends Role {
     public void fin(BloodyPlayer b){
         b.getPlayerInstance().getInventory().clear();
         if(b.getGame().murderleftsixe() == 1)
-            util.sendTitle(b.getPlayerInstance(), "§c§l Le MURDER a gagné", "", 0, 3, 0);
+            util.sendTitle(b.getGame(), "§c§l Le MURDER a gagné", "", 0, 3, 0);
         else
-            util.sendTitle(b.getPlayerInstance(), "§c§l Les MURDER ont gagné", "", 0, 3, 0);
+            util.sendTitle(b.getGame(), "§c§l Les MURDER ont gagné", "", 0, 3, 0);
     }
 
     @Override
@@ -121,7 +121,7 @@ public class Murder extends Role {
             @Override
             public void run() {
                 timer--;
-                util.sendActionBar(b.getPlayerInstance(),"Cooldown épée : "+timer);
+                util.sendActionBar(b.getPlayerInstance(),"§aCooldown épée : §8"+timer);
                 if(timer  <= 0) {
                     timer = 6;
                     cancel();
@@ -159,7 +159,7 @@ public class Murder extends Role {
                             victim.damage(100.0);
                             Repository.findBloodyPlayer(attacker).addkills();
                         } else {
-                            util.sendTitle(attacker, "", "§c§lC'est ton ally dommage ):", 0, 2, 0);
+                            util.sendActionBar(attacker, "§c§lC'est ton ally dommage ):");
                         }
                     }
                 });
@@ -197,7 +197,7 @@ public class Murder extends Role {
         if (g.murderleftsixe() <= 0) {
             g.setEnd(Roles.Innocent);
         } else {
-            util.sendTitle(b.getGame(),"", "§a§lil reste: §b§l" + (g.murderleftsixe()) + " §a§lMurder", 0, 3, 0);
+            util.sendActionBar(g,"§a§lil reste: §b§l" + (g.murderleftsixe()) + " §a§lMurder");
         }
     }
 }

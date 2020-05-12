@@ -28,11 +28,14 @@ public class util {
 		sendTitle(b.getPlayerInstance(),title,subtitle,fadein,say,fadeout);
 	}
 
+	public static void sendActionBar(Game game, String message) {
+		for (BloodyPlayer b : game.getPlayerInGame())
+			sendActionBar(b.getPlayerInstance(),message);
+	}
 	public static void sendActionBar(Player p, String message) {
 		IChatBaseComponent cbc = IChatBaseComponent.ChatSerializer.a("{\"text\": \"" + message + "\"}");
 		PacketPlayOutChat ppoc = new PacketPlayOutChat(cbc, (byte) 2);
 		((CraftPlayer) p).getHandle().playerConnection.sendPacket(ppoc);
-
 	}
 
     public static void sendTitle (Player player, String title, String subtitle, int fadein, int say, int fadeout) {
