@@ -38,28 +38,28 @@ public class Game {
 
     public void addor(Player p) {
         Location l = p.getLocation();
-        String s = (int)l.getX()+","+(int)(l.getY()+1)+","+(int)l.getZ();
-        p.sendMessage("§eNouveau spawn d'or définie en: "+s);
+        p.sendMessage("§eNouveau spawn d'or définie en: "+util.location(l));
         listor.add(p.getLocation().clone());
-        BloodyMurder.instance.getConfig().set("games."+name+".or", listor);
+        ArrayList<String > list = util.location(listor);
+        BloodyMurder.instance.getConfig().set("games."+name+".or", list);
         BloodyMurder.instance.saveConfig();
     }
 
     public void addspawn(Player player) {
         Location l = player.getLocation();
-        String s = (int)l.getX()+","+(int)(l.getY()+1)+","+(int)l.getZ();
-        player.sendMessage("§eNouveau spawn définie en: "+s);
+        player.sendMessage("§eNouveau spawn définie en: "+util.location(l));
         listspawn.add(player.getLocation().clone());
-        BloodyMurder.instance.getConfig().set("games."+instance.toString()+".spawn", listspawn);
+        ArrayList<String > list = util.location(listspawn);
+        BloodyMurder.instance.getConfig().set("games."+name+".spawn", list);
         BloodyMurder.instance.saveConfig();
     }
 
     public void setLobby(Player player) {
         Location l = player.getLocation();
-        String s = (int)l.getX()+","+(int)(l.getY()+1)+","+(int)l.getZ();
-        player.sendMessage("§eNouveau lobby définie en: "+s);
-        listspawn.add(player.getLocation().clone());
-        BloodyMurder.instance.getConfig().set("games."+instance.toString()+".lobby", spawn);
+        ArrayList<String> s = new ArrayList<>(Collections.singleton(util.location(l)));
+        player.sendMessage("§eNouveau lobby définie en: "+s.get(0));
+        listspawn.add(player.getLocation());
+        BloodyMurder.instance.getConfig().set("games."+name+".lobby", s);
         BloodyMurder.instance.saveConfig();
     }
 
@@ -81,18 +81,14 @@ public class Game {
         role = null;
         setDisable();
 
-        if(BloodyMurder.instance.getConfig().getStringList("games."+name+".or") != null)
+        if(!BloodyMurder.instance.getConfig().getStringList("games."+name+".or").isEmpty())
             listor = util.returnLocation(BloodyMurder.instance.getConfig().getStringList("games."+name+".or"));
 
-        if(BloodyMurder.instance.getConfig().getStringList("games."+name+".spawn") != null)
+        if(!BloodyMurder.instance.getConfig().getStringList("games."+name+".spawn").isEmpty())
             listspawn = util.returnLocation(BloodyMurder.instance.getConfig().getStringList("games."+name+".or"));
 
-        System.out.println("--------");
-        System.out.println(BloodyMurder.instance.getConfig().getString("games."+name+".lobby"));
-        if(BloodyMurder.instance.getConfig().getString("games."+name+".lobby") != null)
-            spawn = util.returnLocation(BloodyMurder.instance.getConfig().getString("games."+name+".lobby"));
-
-        System.out.println(spawn);
+        if(!BloodyMurder.instance.getConfig().getStringList("games."+name+".lobby").isEmpty())
+            spawn = util.returnLocation(BloodyMurder.instance.getConfig().getStringList("games."+name+".lobby").get(0));
     }
 
     @Deprecated
@@ -158,12 +154,12 @@ public class Game {
         b.getPlayerInstance().getInventory().setItem(8, itemStack);
         if (getMode() == GameMode.DISABLE) {
             setWait();
-            util.sendTitle(b, " ", "§a§lVous avez démarré la partie", 0, 3, 0);
+            util.sendTitle(b, "Map : "+name, "§a§lVous avez démarré la partie", 0, 3, 0);
         } else if (getMode() == GameMode.WAITING) {
-            util.sendTitle(b, " ", "§a§lVous avez rejoint la partie", 0, 3, 0);
+            util.sendTitle(b, "Map : "+name, "§a§lVous avez rejoint la partie", 0, 3, 0);
         } else {
             p.setGameMode(org.bukkit.GameMode.SPECTATOR);
-            util.sendTitle(b, " ", "§a§lVous avec rejoint en mode spectateur", 0, 3, 0);
+            util.sendTitle(b, "Map : "+name, "§a§lVous avec rejoint en mode spectateur", 0, 3, 0);
         }
     }
 
@@ -301,6 +297,7 @@ public class Game {
     }
 
     public void setGame() {
+        //TODO crée un Gui qui donne les role :)
         if (mode != GameMode.GAME) {
             mode = GameMode.GAME;
             listrole.clear();
@@ -323,26 +320,25 @@ public class Game {
                     listrole.add(Roles.Murder);
                     break;
                 default:
-                    for (BloodyPlayer b : playerInGame) {
-                        Message("Erreur merci de conctacter un admin");
-                    }
+                    Message("Erreur merci de conctacter un admin");
                     break;
             }
+            //TODO faire un random des Teleportation
             ArrayList<BloodyPlayer> random = util.randomlist(playerInGame);
-            for (int i = 0; i < playerInGame.size(); i++) {
-                playerInGame.get(i).setRole(listrole.get(i));
-                if (listrole.get(i) == Roles.Murder) {
-                    murderleft.add(playerInGame.get(i));
-                } else {
-                    innocentleft.add(playerInGame.get(i));
-                }
-            }
-            for (BloodyPlayer b : playerInGame) {
-                Roles.PlayerRoles.get(b.getRole()).message(b);
+            for (int i = 0; i < random.size(); i++) {
+                BloodyPlayer b = random.get(i);
+                b.setRole(listrole.get(i));
+                if (listrole.get(i) == Roles.Murder)
+                    murderleft.add(b);
+                else
+                    innocentleft.add(b);
+                b.getPlayerInstance().teleport(util.returnLocation(BloodyMurder.instance.getConfig().getStringList("games."+name+".spawn")).get(i));
                 b.getPlayerInstance().getInventory().clear();
+                Roles.PlayerRoles.get(b.getRole()).message(b);
             }
 
             timer = 120;
+
             new BukkitRunnable() {
                 @Override
                 public void run() {

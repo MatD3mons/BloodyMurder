@@ -14,8 +14,9 @@ public class CmdCreate extends Cmd {
 
     @Override
     public void perform(Context context) {
-        if(context.args.size() <= 1){return;}
-        GameManager.addgame(context.args.get(1));
-        context.player.sendMessage("La map "+context.args.get(1)+" a était crée");
+        if(context.args.size() <= 0){return;}
+        if(context.args.size() > 1){return;}
+        GameManager.addgame(context.args.get(0));
+        context.player.sendMessage("La map "+context.args.get(0)+" a était crée");
     }
 }

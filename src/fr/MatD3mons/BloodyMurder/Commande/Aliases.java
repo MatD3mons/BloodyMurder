@@ -13,7 +13,7 @@ public class Aliases {
     public static ArrayList<String> Addor = new ArrayList<>(Collections.singletonList("addor"));
     public static ArrayList<String> setwait = new ArrayList<>(Collections.singletonList("setwait"));
     public static ArrayList<String> Create = new ArrayList<>(Collections.singletonList("create"));
-    public static ArrayList<String> AddSpawn = new ArrayList<>(Collections.singletonList("setspawn"));
+    public static ArrayList<String> AddSpawn = new ArrayList<>(Collections.singletonList("addspawn"));
     public static ArrayList<String> SetLobby = new ArrayList<>(Collections.singletonList("setlobby"));
 
 

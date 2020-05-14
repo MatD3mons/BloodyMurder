@@ -5,7 +5,6 @@ import fr.MatD3mons.BloodyMurder.Commande.Cmd;
 import fr.MatD3mons.BloodyMurder.Commande.Context;
 import fr.MatD3mons.BloodyMurder.Game.Game;
 import fr.MatD3mons.BloodyMurder.Game.GameManager;
-import fr.MatD3mons.BloodyMurder.GameComponents.BloodyPlayer;
 
 public class CmdAddOr extends Cmd {
 
@@ -16,8 +15,8 @@ public class CmdAddOr extends Cmd {
 
     @Override
     public void perform(Context context) {
-        if(context.args.size() <= 1){return;}
-        Game g = GameManager.games.get(context.args.get(1));
+        if(context.args.size() <= 0){return;}
+        Game g = GameManager.games.get(context.args.get(0));
         g.addor(context.player);
     }
 }

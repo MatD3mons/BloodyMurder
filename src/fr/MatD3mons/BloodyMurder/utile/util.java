@@ -61,8 +61,7 @@ public class util {
 	}
 
 	public static <T> ArrayList<T> randomlist(ArrayList<T> list){
-		ArrayList<T> new_list = new ArrayList<>();
-		Collections.copy(list,new_list);
+		ArrayList<T> new_list = new ArrayList<T>(list);
 		Collections.shuffle(new_list);
 		return new_list;
 	}
@@ -82,4 +81,16 @@ public class util {
 			list.add(returnLocation(s));
 		return list;
 	}
+
+	public static String location(Location l){
+		return  (int)l.getX()+","+(int)(l.getY()+1)+","+(int)l.getZ()+","+l.getWorld().getName();
+	}
+
+	public static ArrayList<String> location(List<Location> locationsList){
+		ArrayList<String> list = new ArrayList<>();
+		for(Location l : locationsList)
+			list.add(location(l));
+		return list;
+	}
+
 }

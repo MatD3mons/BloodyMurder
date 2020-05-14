@@ -4,10 +4,10 @@ import fr.MatD3mons.BloodyMurder.BloodyMurder;
 import fr.MatD3mons.BloodyMurder.GameComponents.BloodyPlayer;
 import fr.MatD3mons.BloodyMurder.utile.util;
 import org.bukkit.Location;
+import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Set;
 
 public class GameManager {
 
@@ -16,18 +16,32 @@ public class GameManager {
 
     public GameManager(){
         games = new HashMap<>();
-        lobby = util.returnLocation(BloodyMurder.getInstance().getConfig().getString("lobby"));
-        for(String map: BloodyMurder.instance.getConfig().getConfigurationSection("games").getKeys(false)){
+
+        ConfigurationSection conf_lobby = BloodyMurder.getInstance().getConfig().getConfigurationSection("lobby");
+        if (conf_lobby == null){
+            conf_lobby = BloodyMurder.getInstance().getConfig().createSection("lobby");
+            conf_lobby.set("spawn","0,80,0,world");
+        }
+        lobby = util.returnLocation(conf_lobby.getString("spawn"));
+
+        ConfigurationSection conf_games = BloodyMurder.getInstance().getConfig().getConfigurationSection("games");
+        if (conf_games == null)
+            conf_games = BloodyMurder.getInstance().getConfig().createSection("games");
+        for(String map: conf_games.getKeys(false)){
             games.put(map,new Game(map));
         }
+
+        BloodyMurder.instance.saveConfig();
     }
 
     public static void addgame(String name){
-        Set<String> list = BloodyMurder.instance.getConfig().getConfigurationSection("games").getKeys(false);
-        list.add(name);
-        //TODO ajouter le lobby directement a la création
-        BloodyMurder.instance.getConfig().set("games", list);
+        ConfigurationSection conf_games = BloodyMurder.getInstance().getConfig().getConfigurationSection("games");
+        ConfigurationSection conf_game = conf_games.createSection(name);
+        conf_game.set("lobby",new ArrayList<>());
+        conf_game.set("spawn",new ArrayList<>());
+        conf_game.set("or",new ArrayList<>());
         BloodyMurder.instance.saveConfig();
+        games.put(name,new Game(name));
     }
 
     public static void rejoind(BloodyPlayer b) {
@@ -35,28 +49,28 @@ public class GameManager {
             b.getPlayerInstance().sendMessage("§a§lVous être déja en game");
             return;
         }
+        ArrayList<Game> random = util.randomlist(new ArrayList<>(games.values()));
         //=== On check si aucune game attend des joueur
-        for (Game gametest : games.values()) {
-            if (gametest.getMode() == Game.GameMode.WAITING && gametest.getSixe() <= gametest.getLimite()) {
-                gametest.rejoind(b);
+        for (Game g : random) {
+            if (g.getMode() == Game.GameMode.WAITING && g.getSixe() <= g.getLimite()) {
+                g.rejoind(b);
                 return;
             }
         }
         //=== On check en random si y'a une game libre
-        ArrayList<Game> random = util.randomlist(new ArrayList<>(games.values()));
-        for (int i = 0; i < games.size(); i++) {
-            ArrayList<Game> gametest = new ArrayList<>();
-            for (String s : games.keySet())
-                gametest.add(games.get(s));
-            if (gametest.get(i).getMode() == Game.GameMode.DISABLE) {
-                gametest.get(i).rejoind(b);
-                return;
+        for(Game g: random){
+            if(g.getMode() == Game.GameMode.DISABLE){
+                if(g.spawn != null){
+                    g.rejoind(b);
+                    return;
+                }
+                util.sendActionBar(b.getPlayerInstance(),"Le lobby est mal définie");
             }
         }
         //=== plus de place, on l'ajoute random au parti en cours
-        for (Game gametest : games.values()) {
-            if (gametest.getSixe() <= gametest.getLimite()) {
-                gametest.rejoind(b);
+        for(Game g: random){
+            if (g.getSixe() <= g.getLimite()) {
+                g.rejoind(b);
                 return;
             }
         }

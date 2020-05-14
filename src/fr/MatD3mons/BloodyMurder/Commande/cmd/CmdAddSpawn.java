@@ -15,10 +15,9 @@ public class CmdAddSpawn extends Cmd {
 
     @Override
     public void perform(Context context) {
-        if(context.args.size() <= 1){return;}
-        Game g = GameManager.games.get(context.args.get(1));
+        if(context.args.size() <= 0){return;}
+        Game g = GameManager.games.get(context.args.get(0));
         if(g == null){return;}
-        if(context.args.size() == 2){return;}
         g.addspawn(context.player);
     }
 }
