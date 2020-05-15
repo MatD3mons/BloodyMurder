@@ -72,7 +72,13 @@ public class BloodyMurder extends JavaPlugin {
             p.getInventory().clear();
             p.teleport(GameManager.lobby);
         }
-        Gui.onDisable();
+        //GUI Disable
+        for(Player p : Bukkit.getOnlinePlayers()) {
+            BloodyPlayer bp = Repository.findBloodyPlayer(p);
+            if(bp.getCurrentGui() != null) {
+                bp.getPlayerInstance().closeInventory();
+            }
+        }
     }
 
     @Override

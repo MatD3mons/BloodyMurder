@@ -2,6 +2,7 @@ package fr.MatD3mons.BloodyMurder.utile;
 
 import fr.MatD3mons.BloodyMurder.BloodyMurder;
 import fr.MatD3mons.BloodyMurder.Game.Game;
+import fr.MatD3mons.BloodyMurder.Game.Roles;
 import fr.MatD3mons.BloodyMurder.GameComponents.BloodyPlayer;
 import net.minecraft.server.v1_8_R3.*;
 import net.minecraft.server.v1_8_R3.PacketPlayOutTitle.EnumTitleAction;
@@ -93,4 +94,18 @@ public class util {
 		return list;
 	}
 
+	public static <T> List<String> tolistString(List<T> list ){
+		ArrayList<String> newliste = new ArrayList<>();
+		for (T t:list)
+			newliste.add(t.toString());
+		return  newliste;
+	}
+
+	public static ArrayList<Roles> returnRoles(List<String> stringList) {
+		ArrayList<Roles> newListe = new ArrayList<>();
+		for(String s: stringList){
+			newListe.add(Roles.getRoles(s));
+		}
+		return newListe;
+	}
 }

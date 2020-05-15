@@ -17,4 +17,10 @@ public enum Roles {
         PlayerRoles.put(Murder,new Murder());
         PlayerRoles.put(Innocent,new Innocent());
     }
+
+    public static Roles getRoles(String name){
+        if(name.equals(Murder.name()))return Murder;
+        return Innocent;
+    }
+
 }

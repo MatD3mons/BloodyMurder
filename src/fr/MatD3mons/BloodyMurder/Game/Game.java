@@ -50,9 +50,22 @@ public class Game {
     public void addspawn(Player player) {
         Location l = player.getLocation();
         player.sendMessage("§eNouveau spawn définie en: "+util.location(l));
+
         listspawn.add(player.getLocation().clone());
-        ArrayList<String > list = util.location(listspawn);
+        List<String > list = util.location(listspawn);
         BloodyMurder.instance.getConfig().set("games."+name+".spawn", list);
+        BloodyMurder.instance.saveConfig();
+
+        addRoles();
+    }
+
+    public void addRoles(){
+        if(listrole.size() == 0)
+            listrole.add(Roles.Murder);
+        else
+            listrole.add(Roles.Innocent);
+        List<String> listR = util.tolistString(listrole);
+        BloodyMurder.instance.getConfig().set("games."+name+".roles", listR);
         BloodyMurder.instance.saveConfig();
     }
 
@@ -87,24 +100,23 @@ public class Game {
             listor = util.returnLocation(BloodyMurder.instance.getConfig().getStringList("games."+name+".or"));
 
         if(!BloodyMurder.instance.getConfig().getStringList("games."+name+".spawn").isEmpty())
-            listspawn = util.returnLocation(BloodyMurder.instance.getConfig().getStringList("games."+name+".or"));
+            listspawn = util.returnLocation(BloodyMurder.instance.getConfig().getStringList("games."+name+".spawn"));
 
         if(!BloodyMurder.instance.getConfig().getStringList("games."+name+".lobby").isEmpty())
             spawn = util.returnLocation(BloodyMurder.instance.getConfig().getStringList("games."+name+".lobby").get(0));
 
-        setRoles();
-    }
+        if(!BloodyMurder.instance.getConfig().getStringList("games."+name+".roles").isEmpty())
+            listrole = util.returnRoles(BloodyMurder.instance.getConfig().getStringList("games."+name+".roles"));
 
-    public void setRoles(){
-        //TODO mettre ceci dans la config
-        for(int i = 0; i < listspawn.size();i++){
-            if(i == 1){
-                listrole.add(Roles.Murder);
+        if(listspawn.size() > listrole.size())
+            for(int i = listrole.size(); i < listspawn.size();i++){
+                addRoles();
             }
-            listrole.add(Roles.Innocent);
-        }
     }
 
+    public ArrayList<Roles> getlistrole(){
+        return listrole;
+    }
 
     @Deprecated
     public void setTeam(Player p) {

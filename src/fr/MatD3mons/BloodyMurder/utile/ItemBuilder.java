@@ -18,7 +18,6 @@ public class ItemBuilder {
 
     private ItemStack instance;
 
-    private List<String> description;
     private List<String> lore = new ArrayList<>();
 
     public ItemBuilder() {
@@ -57,12 +56,12 @@ public class ItemBuilder {
 
 
     public ItemBuilder setDescription(String... description) {
-        this.description = Arrays.asList(description);
+        this.lore = Arrays.asList(description);
         return this;
     }
 
     public ItemBuilder setDescription(List<String> description) {
-        this.description = description;
+        this.lore = description;
         return this;
     }
 

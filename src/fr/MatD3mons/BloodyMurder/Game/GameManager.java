@@ -40,6 +40,7 @@ public class GameManager {
         conf_game.set("lobby",new ArrayList<>());
         conf_game.set("spawn",new ArrayList<>());
         conf_game.set("or",new ArrayList<>());
+        conf_game.set("roles",new ArrayList<>());
         BloodyMurder.instance.saveConfig();
         games.put(name,new Game(name));
     }

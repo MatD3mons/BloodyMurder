@@ -54,13 +54,4 @@ public abstract class Gui extends CraftInventoryCustom implements CraftingInvent
     public abstract void onClick(InventoryClickEvent e);
 
     public abstract void onClose(InventoryCloseEvent e);
-
-    public static void onDisable(){
-        for(Player p : Bukkit.getOnlinePlayers()) {
-            BloodyPlayer bp = Repository.findBloodyPlayer(p);
-            if(bp.getCurrentGui() != null) {
-                bp.getPlayerInstance().closeInventory();
-            }
-        }
-    }
 }
