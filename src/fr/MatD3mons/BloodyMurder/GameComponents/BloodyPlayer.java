@@ -4,6 +4,7 @@ import fr.MatD3mons.BloodyMurder.BloodyMurder;
 import fr.MatD3mons.BloodyMurder.Game.Game;
 import fr.MatD3mons.BloodyMurder.Game.Role;
 import fr.MatD3mons.BloodyMurder.Game.Roles;
+import fr.MatD3mons.BloodyMurder.gui.Gui;
 import org.bukkit.entity.Player;
 
 public class BloodyPlayer {
@@ -18,6 +19,7 @@ public class BloodyPlayer {
     private int win;
     private int lose;
     private String grade;
+    private Gui currentGui;
 
     public void setRole(Roles r) {
         role = r;
@@ -115,4 +117,19 @@ public class BloodyPlayer {
         this.lose = lose;
         this.grade = grade;
     }
+
+    public void setCurrentGui(Gui gui) {
+        if(gui != null) {
+            gui.open(playerInstance);
+            this.currentGui = gui;
+        }
+        else {
+            this.currentGui = null;
+        }
+    }
+
+    public Gui getCurrentGui() {
+        return currentGui;
+    }
+
 }

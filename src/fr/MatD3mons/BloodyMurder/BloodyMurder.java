@@ -7,12 +7,16 @@ import fr.MatD3mons.BloodyMurder.Event.*;
 import fr.MatD3mons.BloodyMurder.Game.Game;
 import fr.MatD3mons.BloodyMurder.Game.GameManager;
 import fr.MatD3mons.BloodyMurder.Game.Roles;
+import fr.MatD3mons.BloodyMurder.GameComponents.BloodyPlayer;
 import fr.MatD3mons.BloodyMurder.ScoreBoard.ScoreBoardDisplayer;
 import fr.MatD3mons.BloodyMurder.bdd.BloodyPlayerDao;
+import fr.MatD3mons.BloodyMurder.gui.Gui;
 import fr.MatD3mons.BloodyMurder.utile.Repository;
 import net.minecraft.server.v1_8_R3.EntityArmorStand;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -62,11 +66,13 @@ public class BloodyMurder extends JavaPlugin {
     public void onDisable() {
         for (Game g:GameManager.games.values()){
             if(g.getMode() == Game.GameMode.GAME)
-                g.setEnd(Roles.Innocent);
+                g.setDisable();
         }
-        //TODO faire un stop:
-        // - retirer le stuff
-        // téléporter au lobby
+        for (Player p : Bukkit.getOnlinePlayers()){
+            p.getInventory().clear();
+            p.teleport(GameManager.lobby);
+        }
+        Gui.onDisable();
     }
 
     @Override

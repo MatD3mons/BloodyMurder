@@ -15,7 +15,7 @@ public class Aliases {
     public static ArrayList<String> Create = new ArrayList<>(Collections.singletonList("create"));
     public static ArrayList<String> AddSpawn = new ArrayList<>(Collections.singletonList("addspawn"));
     public static ArrayList<String> SetLobby = new ArrayList<>(Collections.singletonList("setlobby"));
-
+    public static ArrayList<String> Admin = new ArrayList<>(Collections.singletonList("admin"));
 
     private static transient Aliases i = new Aliases();
 }

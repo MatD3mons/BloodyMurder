@@ -8,6 +8,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.NameTagVisibility;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
@@ -17,6 +18,7 @@ import java.util.*;
 public class Game {
 
     private Game instance;
+    private BukkitTask bukkitRunnable;
     private ArrayList<BloodyPlayer> playerInGame;
     private ArrayList<BloodyPlayer> innocentleft;
     private ArrayList<BloodyPlayer> murderleft;
@@ -89,7 +91,20 @@ public class Game {
 
         if(!BloodyMurder.instance.getConfig().getStringList("games."+name+".lobby").isEmpty())
             spawn = util.returnLocation(BloodyMurder.instance.getConfig().getStringList("games."+name+".lobby").get(0));
+
+        setRoles();
     }
+
+    public void setRoles(){
+        //TODO mettre ceci dans la config
+        for(int i = 0; i < listspawn.size();i++){
+            if(i == 1){
+                listrole.add(Roles.Murder);
+            }
+            listrole.add(Roles.Innocent);
+        }
+    }
+
 
     @Deprecated
     public void setTeam(Player p) {
@@ -198,6 +213,8 @@ public class Game {
         }
         listTeam.clear();
         mode = GameMode.DISABLE;
+        if(bukkitRunnable != null)
+            bukkitRunnable.cancel();
     }
 
     public void supInnocent(BloodyPlayer b){
@@ -239,6 +256,7 @@ public class Game {
                 ItemStack itemStack = util.create(Material.BED,1,ChatColor.RED,"Lobby");
                 b.getPlayerInstance().getInventory().setItem(8,itemStack);
             }
+            bukkitRunnable =
             new BukkitRunnable() {
                 @Override
                 public void run() {
@@ -297,34 +315,10 @@ public class Game {
     }
 
     public void setGame() {
-        //TODO crée un Gui qui donne les role :)
         if (mode != GameMode.GAME) {
             mode = GameMode.GAME;
-            listrole.clear();
-            switch (playerInGame.size()) {
-                case 8:
-                    listrole.add(Roles.Murder);
-                case 7:
-                    listrole.add(Roles.Innocent);
-                case 6:
-                    listrole.add(Roles.Innocent);
-                case 5:
-                    listrole.add(Roles.Innocent);
-                case 4:
-                    listrole.add(Roles.Innocent);
-                case 3:
-                    listrole.add(Roles.Innocent);
-                case 2:
-                    listrole.add(Roles.Innocent);
-                case 1:
-                    listrole.add(Roles.Murder);
-                    break;
-                default:
-                    Message("Erreur merci de conctacter un admin");
-                    break;
-            }
-            //TODO faire un random des Teleportation
             ArrayList<BloodyPlayer> random = util.randomlist(playerInGame);
+            ArrayList<Location> randomTP = util.randomlist(util.returnLocation(BloodyMurder.instance.getConfig().getStringList("games."+name+".spawn")));
             for (int i = 0; i < random.size(); i++) {
                 BloodyPlayer b = random.get(i);
                 b.setRole(listrole.get(i));
@@ -332,13 +326,13 @@ public class Game {
                     murderleft.add(b);
                 else
                     innocentleft.add(b);
-                b.getPlayerInstance().teleport(util.returnLocation(BloodyMurder.instance.getConfig().getStringList("games."+name+".spawn")).get(i));
+                b.getPlayerInstance().teleport(randomTP.get(i));
                 b.getPlayerInstance().getInventory().clear();
                 Roles.PlayerRoles.get(b.getRole()).message(b);
             }
 
             timer = 120;
-
+            bukkitRunnable =
             new BukkitRunnable() {
                 @Override
                 public void run() {
@@ -390,6 +384,7 @@ public class Game {
                 b.getPlayerInstance().getInventory().setItem(8,itemStack);
             }
             timer = 10;
+            bukkitRunnable =
             new BukkitRunnable() {
                 @Override
                 public void run() {

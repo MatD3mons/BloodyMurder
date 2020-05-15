@@ -20,6 +20,7 @@ public class CmdBase extends Cmd implements CommandExecutor {
     public CmdCreate cmdCreate = new CmdCreate();
     public CmdSetLobby cmdSetLobby = new CmdSetLobby();
     public CmdAddSpawn cmdAddSpawn = new CmdAddSpawn();
+    public CmdAdmin cmdAdmin = new CmdAdmin();
 
     public CmdBase() {
         super();
@@ -34,6 +35,7 @@ public class CmdBase extends Cmd implements CommandExecutor {
         this.addSubCommand(this.cmdCreate);
         this.addSubCommand(this.cmdSetLobby);
         this.addSubCommand(this.cmdAddSpawn);
+        this.addSubCommand(this.cmdAdmin);
     }
 
     @Override
