@@ -30,7 +30,7 @@ public class GuiGame extends Gui {
         int i = 0;
         for(Roles r : game.getlistrole()) {
             ItemStack game = new ItemBuilder(ItemBuilder.getCustomTextureHead(r.name(), skull_game))
-                    .setDisplayName("§5§l"+r.name())
+                    .setDisplayName("§2§lRole-§4§l"+(i+1)+": §5§l"+r.name())
                     .setDescription(Arrays.asList(
                             "",
                             "§7Click gauche : Murder",

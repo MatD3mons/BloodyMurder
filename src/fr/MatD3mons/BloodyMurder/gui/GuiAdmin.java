@@ -51,6 +51,7 @@ public class GuiAdmin extends Gui {
     @Override
     public void onClick(InventoryClickEvent e) {
         if(e.getCurrentItem() == null) {return;}
+
         //TODO ne jamais faire un e.getCurrentItem()...
         Game g = itemGame.get(e.getSlot());
         if(g != null) {

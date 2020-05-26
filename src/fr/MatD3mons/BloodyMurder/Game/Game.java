@@ -2,6 +2,7 @@ package fr.MatD3mons.BloodyMurder.Game;
 
 import fr.MatD3mons.BloodyMurder.BloodyMurder;
 import fr.MatD3mons.BloodyMurder.GameComponents.BloodyPlayer;
+import fr.MatD3mons.BloodyMurder.GameComponents.Or;
 import fr.MatD3mons.BloodyMurder.utile.util;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
@@ -22,7 +23,7 @@ public class Game {
     private ArrayList<BloodyPlayer> playerInGame;
     private ArrayList<BloodyPlayer> innocentleft;
     private ArrayList<BloodyPlayer> murderleft;
-    private ArrayList<Location> listor;
+    private ArrayList<Or> listor;
     private ArrayList<Location> listspawn;
     private ArrayList<Roles> listrole;
     private HashMap<Player,Team> listTeam;
@@ -41,8 +42,8 @@ public class Game {
     public void addor(Player p) {
         Location l = p.getLocation();
         p.sendMessage("§eNouveau spawn d'or définie en: "+util.location(l));
-        listor.add(p.getLocation().clone());
-        ArrayList<String > list = util.location(listor);
+        listor.add(new Or(p.getLocation().clone()));
+        ArrayList<String > list = util.location(Or.getlist(listor));
         BloodyMurder.instance.getConfig().set("games."+name+".or", list);
         BloodyMurder.instance.saveConfig();
     }
@@ -97,7 +98,8 @@ public class Game {
         setDisable();
 
         if(!BloodyMurder.instance.getConfig().getStringList("games."+name+".or").isEmpty())
-            listor = util.returnLocation(BloodyMurder.instance.getConfig().getStringList("games."+name+".or"));
+            for(Location l: util.returnLocation(BloodyMurder.instance.getConfig().getStringList("games."+name+".or")))
+                listor.add(new Or(l));
 
         if(!BloodyMurder.instance.getConfig().getStringList("games."+name+".spawn").isEmpty())
             listspawn = util.returnLocation(BloodyMurder.instance.getConfig().getStringList("games."+name+".spawn"));
@@ -258,11 +260,6 @@ public class Game {
             role = null;
             murderleft.clear();
             timer = 20;
-            for (Entity e : this.spawn.getWorld().getEntities()) {
-                if (!(e instanceof Player)) {
-                    e.remove();
-                }
-            }
             for (BloodyPlayer b : playerInGame) {
                 b.getPlayerInstance().setGameMode(org.bukkit.GameMode.ADVENTURE);
                 ItemStack itemStack = util.create(Material.BED,1,ChatColor.RED,"Lobby");
@@ -353,17 +350,9 @@ public class Game {
                             Roles.PlayerRoles.get(b.getRole()).stuff(b);
                         }
                     }
-                    if (timer % 10 == 0) {
-                        for (Location loc : listor) {
-                            Boolean libre = true;
-                            for (Entity e : spawn.getWorld().getEntities())
-                                if (e.getLocation().distance(loc) <= 5) {
-                                    libre = false;
-                                }
-                            if (libre) {
-                                spawn.getWorld().dropItem(loc, new ItemStack(Material.GOLD_INGOT, 1));
-                                spawn.getWorld().playSound(loc, Sound.FIRE, 2F, 1F);
-                            }
+                    if (timer % 2 == 0) {
+                        for(Or or: listor){
+                            or.setfree();
                         }
                     }
                     if (timer < 0) {
