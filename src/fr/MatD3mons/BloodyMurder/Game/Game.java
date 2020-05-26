@@ -3,9 +3,11 @@ package fr.MatD3mons.BloodyMurder.Game;
 import fr.MatD3mons.BloodyMurder.BloodyMurder;
 import fr.MatD3mons.BloodyMurder.GameComponents.BloodyPlayer;
 import fr.MatD3mons.BloodyMurder.GameComponents.Or;
+import fr.MatD3mons.BloodyMurder.persitence.Dto.BloodyPlayerDto;
+import fr.MatD3mons.BloodyMurder.persitence.mapper.BloodyPlayerDomainToDto;
 import fr.MatD3mons.BloodyMurder.utile.util;
+import net.bloodybattle.bloodykvs.BloodyKVS;
 import org.bukkit.*;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -374,15 +376,16 @@ public class Game {
         if (mode != GameMode.END) {
             mode = GameMode.END;
             this.role = r;
-            for (Entity e : spawn.getWorld().getEntities()) {
-                if (!(e instanceof Player))
-                    e.remove();
-            }
             for (BloodyPlayer b : playerInGame) {
+
+                BloodyKVS.getController().getDao(BloodyPlayerDto.class)
+                        .updateAsync(b.playerInstance.getUniqueId().toString(), new BloodyPlayerDomainToDto().map(b));
+
                 Roles.PlayerRoles.get(r).fin(b);
                 resetTeam(b.getPlayerInstance());
                 ItemStack itemStack = util.create(Material.BED,1,ChatColor.RED,"Lobby");
                 b.getPlayerInstance().getInventory().setItem(8,itemStack);
+
             }
             timer = 10;
             bukkitRunnable =

@@ -1,18 +1,33 @@
 package fr.MatD3mons.BloodyMurder.GameComponents;
 
-import fr.MatD3mons.BloodyMurder.BloodyMurder;
 import fr.MatD3mons.BloodyMurder.Game.Game;
-import fr.MatD3mons.BloodyMurder.Game.Role;
 import fr.MatD3mons.BloodyMurder.Game.Roles;
 import fr.MatD3mons.BloodyMurder.gui.Gui;
+import fr.MatD3mons.BloodyMurder.utile.Repository;
 import org.bukkit.entity.Player;
 
-public class BloodyPlayer {
+public class BloodyPlayer{
     public Player playerInstance;
     private Game game = null;
     private Roles role = null;
     private int Totaltekill;
     private int gold;
+
+    public BloodyPlayer() { }
+
+    public BloodyPlayer(Player p){
+        playerInstance = p;
+        Totaltekill = 0;
+        gold = 0;
+        argent = 0;
+        kills = 0;
+        deaths = 0;
+        win = 0;
+        lose = 0;
+    }
+
+    public String getGrade() { return grade; }
+
     private int argent;
     private int kills;
     private int deaths;
@@ -20,6 +35,10 @@ public class BloodyPlayer {
     private int lose;
     private String grade;
     private Gui currentGui;
+
+    public static void registerPlayer(Player connectedPlayer, BloodyPlayer bp) {
+        Repository.add(connectedPlayer, bp);
+    }
 
     public void setRole(Roles r) {
         role = r;
@@ -56,17 +75,6 @@ public class BloodyPlayer {
         return lose;
     }
 
-    public BloodyPlayer(Player p){
-        playerInstance = p;
-        Totaltekill = 0;
-        gold = 0;
-        argent = 0;
-        kills = 0;
-        deaths = 0;
-        win = 0;
-        lose = 0;
-    }
-
     public void update(Roles r){
         Totaltekill += kills;
         argent += kills * 25 + gold;
@@ -81,7 +89,6 @@ public class BloodyPlayer {
                     lose += 1;
             }
         }
-        BloodyMurder.bloodyPlayerDao.update(playerInstance.getUniqueId(),this);
         setRole(null);
     }
 
@@ -105,14 +112,9 @@ public class BloodyPlayer {
         this.game = game;
     }
 
-    public void setGold(int i) {
-        this.gold = i;
-    }
-
-    public void setStatut(int kills, int argent, int deaths, int win, int lose, String grade) {
-        this.Totaltekill = kills;
+    public void setStatut(int Totalekills, int argent, int win, int lose, String grade) {
+        this.Totaltekill = Totalekills;
         this.argent = argent;
-        this.deaths = deaths;
         this.win = win;
         this.lose = lose;
         this.grade = grade;

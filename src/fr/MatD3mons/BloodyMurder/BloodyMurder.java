@@ -6,12 +6,13 @@ import fr.MatD3mons.BloodyMurder.Commande.Context;
 import fr.MatD3mons.BloodyMurder.Event.*;
 import fr.MatD3mons.BloodyMurder.Game.Game;
 import fr.MatD3mons.BloodyMurder.Game.GameManager;
-import fr.MatD3mons.BloodyMurder.Game.Roles;
 import fr.MatD3mons.BloodyMurder.GameComponents.BloodyPlayer;
 import fr.MatD3mons.BloodyMurder.ScoreBoard.ScoreBoardDisplayer;
-import fr.MatD3mons.BloodyMurder.bdd.BloodyPlayerDao;
-import fr.MatD3mons.BloodyMurder.gui.Gui;
+import fr.MatD3mons.BloodyMurder.persitence.Dto.BloodyPlayerDto;
+import fr.MatD3mons.BloodyMurder.persitence.mapper.BloodyPlayerDtoToDomain;
 import fr.MatD3mons.BloodyMurder.utile.Repository;
+import net.bloodybattle.bloodykvs.BloodyKVS;
+import net.bloodybattle.bloodykvs.core.BloodyDao;
 import net.minecraft.server.v1_8_R3.EntityArmorStand;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -26,11 +27,12 @@ import java.util.stream.Collectors;
 
 public class BloodyMurder extends JavaPlugin {
 
+    public static String BLOODYPLAYERDTO_COLLECTION_NAME = "bloodyMurder_bloodyplayer";
+
     public static Plugin instance;
     public static GameManager gameManager;
     public static HashMap<UUID, PermissionAttachment> perms;
     public static HashMap<UUID, EntityArmorStand> stands;
-    public static BloodyPlayerDao bloodyPlayerDao;
     public static CmdBase cmdBase;
 
     public static Plugin getInstance() {
@@ -44,8 +46,6 @@ public class BloodyMurder extends JavaPlugin {
         gameManager = new GameManager();
         stands = new HashMap<>();
         perms = new HashMap<UUID, PermissionAttachment>();
-        bloodyPlayerDao = new BloodyPlayerDao();
-        Repository.Update();
         cmdBase = new CmdBase();
         this.getCommand("BloodyMurder").setExecutor(cmdBase);
         this.getCommand("BloodyMurder").setTabCompleter(this);
@@ -60,6 +60,9 @@ public class BloodyMurder extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new InventoryClickEvent(), this);
         getServer().getPluginManager().registerEvents(new PlayerInteractEvent(), this);
         ScoreBoardDisplayer.initialize();
+        for(Player p : Bukkit.getOnlinePlayers()) {
+            loadPlayer(p);
+        }
     }
 
     @Override
@@ -117,5 +120,33 @@ public class BloodyMurder extends JavaPlugin {
         }
         return completions;
     }
+
+    public static void loadPlayer(Player player) {
+
+        String playerId = player.getUniqueId().toString();
+        BloodyDao<BloodyPlayerDto> dao = BloodyKVS.getController().getOrCreateDao(BloodyPlayerDto.class);
+
+        dao.getAsync(playerId) // get from database
+                .then(bloodyPlayerDto -> { // Handle result
+                    if(bloodyPlayerDto != null) {
+                        // Already exist, let's load all data
+                        BloodyPlayerDtoToDomain mapper = new BloodyPlayerDtoToDomain();
+                        BloodyPlayer bp = mapper.map(bloodyPlayerDto);
+                        if(player.isOnline()) {
+                            bp.setPlayerInstance(player);
+                            BloodyPlayer.registerPlayer(player, bp);
+                        }
+                    }
+                    else {
+                        // FIRST TIME JOIN
+                        BloodyPlayer bp = new BloodyPlayer(player);
+                        if(player.isOnline()) {
+                            dao.saveAsync(playerId, new BloodyPlayerDto())
+                                    .then(() -> BloodyPlayer.registerPlayer(player, bp));
+                        }
+                    }
+                });
+    }
+
 
 }

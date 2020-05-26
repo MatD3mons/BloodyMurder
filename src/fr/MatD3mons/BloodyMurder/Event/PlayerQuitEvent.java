@@ -17,5 +17,6 @@ public class PlayerQuitEvent implements Listener {
         if(b.getGame() != null){
             b.getGame().leave(b);
         }
+        Repository.remove(e.getPlayer());
     }
 }
