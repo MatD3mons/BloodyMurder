@@ -377,15 +377,10 @@ public class Game {
             mode = GameMode.END;
             this.role = r;
             for (BloodyPlayer b : playerInGame) {
-
-                BloodyKVS.getController().getDao(BloodyPlayerDto.class)
-                        .updateAsync(b.playerInstance.getUniqueId().toString(), new BloodyPlayerDomainToDto().map(b));
-
                 Roles.PlayerRoles.get(r).fin(b);
                 resetTeam(b.getPlayerInstance());
                 ItemStack itemStack = util.create(Material.BED,1,ChatColor.RED,"Lobby");
                 b.getPlayerInstance().getInventory().setItem(8,itemStack);
-
             }
             timer = 10;
             bukkitRunnable =
@@ -401,6 +396,11 @@ public class Game {
                         if (playerInGame.size() > 0) {
                             for (BloodyPlayer b : playerInGame) {
                                 b.update(r);
+
+                                //TODO faire aussi quand il quite en END
+                                // Saving to database
+                                BloodyKVS.getController().getDao(BloodyPlayerDto.class)
+                                        .updateAsync(b.playerInstance.getUniqueId().toString(), new BloodyPlayerDomainToDto().map(b));
                                 setWait();
                                 rejoind(b);
                             }

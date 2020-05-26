@@ -10,8 +10,6 @@ public class BloodyPlayerDto extends BloodyDto{
     private int lose;
     private String grade;
 
-    public BloodyPlayerDto() {}
-
     public int getTotaltekill() { return Totaltekill; }
     public void setTotaltekill(int totaltekill) { Totaltekill = totaltekill; }
 
@@ -27,13 +25,11 @@ public class BloodyPlayerDto extends BloodyDto{
     public String getGrade() { return grade; }
     public void setGrade(String grade) { this.grade = grade; }
 
-    @Override
-    public int dataVersion() {
-        return 0;
-    }
+    public BloodyPlayerDto() {}
 
     @Override
-    public String uniqueCollectionName() {
-        return "bloodyMurder_bloodyplayer";
-    }
+    public int dataVersion() { return 0; }
+
+    @Override
+    public String uniqueCollectionName() { return "bloodyMurder_bloodyplayer"; }
 }

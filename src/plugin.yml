@@ -1,8 +1,9 @@
 main: fr.MatD3mons.BloodyMurder.BloodyMurder
 name: BloodyMurder
 version: 1.0
+softdepend: [BloodyDAO]
+depend:
 author: MatD3mons
-
 commands:
   BloodyMurder:
     description: Permette de voire les différente commande

@@ -60,6 +60,7 @@ public class BloodyMurder extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new InventoryClickEvent(), this);
         getServer().getPluginManager().registerEvents(new PlayerInteractEvent(), this);
         ScoreBoardDisplayer.initialize();
+
         for(Player p : Bukkit.getOnlinePlayers()) {
             loadPlayer(p);
         }
