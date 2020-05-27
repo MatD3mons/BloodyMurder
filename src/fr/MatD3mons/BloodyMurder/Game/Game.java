@@ -3,10 +3,8 @@ package fr.MatD3mons.BloodyMurder.Game;
 import fr.MatD3mons.BloodyMurder.BloodyMurder;
 import fr.MatD3mons.BloodyMurder.GameComponents.BloodyPlayer;
 import fr.MatD3mons.BloodyMurder.GameComponents.Or;
-import fr.MatD3mons.BloodyMurder.persitence.Dto.BloodyPlayerDto;
-import fr.MatD3mons.BloodyMurder.persitence.mapper.BloodyPlayerDomainToDto;
+import fr.MatD3mons.BloodyMurder.utile.Repository;
 import fr.MatD3mons.BloodyMurder.utile.util;
-import net.bloodybattle.bloodykvs.BloodyKVS;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -44,10 +42,16 @@ public class Game {
     public void addor(Player p) {
         Location l = p.getLocation();
         p.sendMessage("§eNouveau spawn d'or définie en: "+util.location(l));
-        listor.add(new Or(p.getLocation().clone()));
+        //TODO CHECK SI A MARCHE
+        listor.add(new Or(p.getLocation().clone().subtract(0,2,0)));
         ArrayList<String > list = util.location(Or.getlist(listor));
         BloodyMurder.instance.getConfig().set("games."+name+".or", list);
         BloodyMurder.instance.saveConfig();
+    }
+
+    public void Removeor(){
+        for(Or or:listor)
+            or.removefree();
     }
 
     public void addspawn(Player player) {
@@ -231,6 +235,7 @@ public class Game {
         mode = GameMode.DISABLE;
         if(bukkitRunnable != null)
             bukkitRunnable.cancel();
+        Removeor();
     }
 
     public void supInnocent(BloodyPlayer b){
@@ -369,12 +374,22 @@ public class Game {
                     }
                 }
             }.runTaskTimer(BloodyMurder.instance, 0, 19);
+
+            BukkitTask bukkitRunnableOr = new BukkitRunnable() {
+                @Override
+                public void run() {
+                    for (Or or : listor)
+                        or.rotate();
+                }
+            }.runTaskTimer(BloodyMurder.instance, 0, 1);
+
         }
     }
 
     public void setEnd(Roles r) {
         if (mode != GameMode.END) {
             mode = GameMode.END;
+            Removeor();
             this.role = r;
             for (BloodyPlayer b : playerInGame) {
                 Roles.PlayerRoles.get(r).fin(b);
@@ -396,11 +411,6 @@ public class Game {
                         if (playerInGame.size() > 0) {
                             for (BloodyPlayer b : playerInGame) {
                                 b.update(r);
-
-                                //TODO faire aussi quand il quite en END
-                                // Saving to database
-                                BloodyKVS.getController().getDao(BloodyPlayerDto.class)
-                                        .updateAsync(b.playerInstance.getUniqueId().toString(), new BloodyPlayerDomainToDto().map(b));
                                 setWait();
                                 rejoind(b);
                             }

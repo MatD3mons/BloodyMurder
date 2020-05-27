@@ -13,11 +13,11 @@ public class ScoreBoardDisplayer {
 
 	public static void initialize() {
 		new BukkitRunnable() {
-
 			@Override
 			public void run() {
 				for (Player p : Bukkit.getOnlinePlayers()) {
-					updateScoreBoard(p);
+					if(Repository.BloodyPlayerContains(p))
+						updateScoreBoard(p);
 				}
 			}
 		}.runTaskTimer(BloodyMurder.instance, 0, 5);

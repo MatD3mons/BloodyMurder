@@ -17,6 +17,8 @@ import net.minecraft.server.v1_8_R3.EntityArmorStand;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.plugin.Plugin;
@@ -43,6 +45,10 @@ public class BloodyMurder extends JavaPlugin {
     public void onEnable() {
         instance = this;
         saveDefaultConfig();
+        for(Entity entity:Bukkit.getServer().getWorld("world").getEntities())
+            if(entity instanceof ArmorStand)
+                entity.remove();
+
         gameManager = new GameManager();
         stands = new HashMap<>();
         perms = new HashMap<UUID, PermissionAttachment>();
@@ -59,15 +65,16 @@ public class BloodyMurder extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerQuitEvent(), this);
         getServer().getPluginManager().registerEvents(new InventoryClickEvent(), this);
         getServer().getPluginManager().registerEvents(new PlayerInteractEvent(), this);
-        ScoreBoardDisplayer.initialize();
 
         for(Player p : Bukkit.getOnlinePlayers()) {
             loadPlayer(p);
         }
+        ScoreBoardDisplayer.initialize();
     }
 
     @Override
     public void onDisable() {
+
         for (Game g:GameManager.games.values()){
             if(g.getMode() == Game.GameMode.GAME)
                 g.setDisable();

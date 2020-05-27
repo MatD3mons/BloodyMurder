@@ -3,7 +3,10 @@ package fr.MatD3mons.BloodyMurder.GameComponents;
 import fr.MatD3mons.BloodyMurder.Game.Game;
 import fr.MatD3mons.BloodyMurder.Game.Roles;
 import fr.MatD3mons.BloodyMurder.gui.Gui;
+import fr.MatD3mons.BloodyMurder.persitence.Dto.BloodyPlayerDto;
+import fr.MatD3mons.BloodyMurder.persitence.mapper.BloodyPlayerDomainToDto;
 import fr.MatD3mons.BloodyMurder.utile.Repository;
+import net.bloodybattle.bloodykvs.BloodyKVS;
 import org.bukkit.entity.Player;
 
 public class BloodyPlayer{
@@ -90,6 +93,9 @@ public class BloodyPlayer{
             }
         }
         setRole(null);
+
+        BloodyKVS.getController().getDao(BloodyPlayerDto.class)
+                .updateAsync(playerInstance.getUniqueId().toString(), new BloodyPlayerDomainToDto().map(this));
     }
 
     public Player getPlayerInstance() {
