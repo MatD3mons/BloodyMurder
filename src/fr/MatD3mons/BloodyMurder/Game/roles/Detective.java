@@ -18,6 +18,7 @@ import org.bukkit.inventory.ItemStack;
 public class Detective extends Role {
 
     public Detective(){
+        //TODO config des tête ??
         skull = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjdiZjAyMzkwZDNmM2Y0Y2NlNGJmZWRjM2MxOTA0ODQxMzhhMzE3NGQ4NTQxYThmZDkxMmViYjIxNDdmY2MwZSJ9fX1";
     }
 

@@ -51,7 +51,7 @@ public class ScoreBoardDisplayer {
 		float W = b.getWin();
 		int L = b.getLose();
 		int n = b.getWin() + b.getLose();
-		float r = 0;
+		float r = W;
 		if ( n != 0)
 			r =  W/(float) n;
 		String[] elements = new String[] {

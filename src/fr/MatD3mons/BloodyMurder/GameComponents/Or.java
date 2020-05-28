@@ -61,8 +61,7 @@ public class Or {
 
     public void rotate() {
         if(this.free > 0) {return; }
-        i++;
-        i++;
+        i += 10;
         if(i >= 360)
             i = 0;
         this.body.setHeadPose(new EulerAngle(Math.toRadians(0),Math.toRadians(i),Math.toRadians(0)));

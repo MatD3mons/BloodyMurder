@@ -19,7 +19,6 @@ import java.util.*;
 public class Game {
 
     private Game instance;
-    private BukkitTask bukkitRunnable;
     private ArrayList<BloodyPlayer> playerInGame;
     private ArrayList<BloodyPlayer> innocentleft;
     private ArrayList<BloodyPlayer> murderleft;
@@ -237,8 +236,6 @@ public class Game {
         }
         listTeam.clear();
         mode = GameMode.DISABLE;
-        if(bukkitRunnable != null)
-            bukkitRunnable.cancel();
         Removeor();
     }
 
@@ -276,7 +273,6 @@ public class Game {
                 ItemStack itemStack = util.create(Material.BED,1,ChatColor.RED,"Lobby");
                 b.getPlayerInstance().getInventory().setItem(8,itemStack);
             }
-            bukkitRunnable =
             new BukkitRunnable() {
                 @Override
                 public void run() {
@@ -329,6 +325,8 @@ public class Game {
                             cancel();
                         }
                     }
+                    if(mode != GameMode.WAITING)
+                        cancel();
                 }
             }.runTaskTimer(BloodyMurder.instance, 0, 19);
         }
@@ -352,7 +350,6 @@ public class Game {
             }
 
             timer = 120;
-            bukkitRunnable =
             new BukkitRunnable() {
                 @Override
                 public void run() {
@@ -376,14 +373,18 @@ public class Game {
                             cancel();
                         }
                     }
+                    if(mode != GameMode.GAME)
+                        cancel();
                 }
             }.runTaskTimer(BloodyMurder.instance, 0, 19);
 
-            BukkitTask bukkitRunnableOr = new BukkitRunnable() {
+            new BukkitRunnable() {
                 @Override
                 public void run() {
                     for (Or or : listor)
                         or.rotate();
+                    if(mode != GameMode.GAME)
+                        cancel();
                 }
             }.runTaskTimer(BloodyMurder.instance, 0, 1);
 
@@ -402,7 +403,6 @@ public class Game {
                 b.getPlayerInstance().getInventory().setItem(8,itemStack);
             }
             timer = 10;
-            bukkitRunnable =
             new BukkitRunnable() {
                 @Override
                 public void run() {
@@ -429,6 +429,8 @@ public class Game {
                             cancel();
                         }
                     }
+                    if(mode != GameMode.END)
+                        cancel();
                 }
             }.runTaskTimer(BloodyMurder.instance, 0, 19);
         }

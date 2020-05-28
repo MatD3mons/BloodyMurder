@@ -38,7 +38,7 @@ public class Murder extends Role {
 
         if (killer.getItemInHand().getType() != Material.DIAMOND_SWORD) {return false;}
 
-        if (killer.getInventory().contains(Material.RED_SANDSTONE)){
+        if (killer.getInventory().contains(Material.REDSTONE)){
             p2.getInventory().clear();
             if (!(Repository.findBloodyPlayer(p2).getRole() == Roles.Murder)) {
                 e.setDamage(100);
@@ -46,25 +46,29 @@ public class Murder extends Role {
             } else {
                 util.sendActionBar(killer, "§c§lC'est ton ally dommage ):");
             }
-            for (int i = 0; i < killer.getInventory().getSize(); i++) {
-                if (killer.getInventory().getItem(i) != null)
-                    if (killer.getInventory().getItem(i).getType() == Material.RED_SANDSTONE) {
-                        int j = killer.getInventory().getItem(i).getAmount();
-                        if (j == 1)
-                            killer.getInventory().remove(Material.RED_SANDSTONE);
-                        else
-                            killer.getInventory().getItem(i).setAmount(j - 1);
-                    }
-            }
+            removeSoif(killer);
         }else{
             util.sendTitle(killer, "", "§c§lTu n'as pas de soif de sang", 0, 3, 0);
         }
         return false;
     }
 
+    public  void  removeSoif(Player killer){
+        for (int i = 0; i < killer.getInventory().getSize(); i++) {
+            if (killer.getInventory().getItem(i) != null)
+                if (killer.getInventory().getItem(i).getType() == Material.REDSTONE) {
+                    int j = killer.getInventory().getItem(i).getAmount();
+                    if (j == 1)
+                        killer.getInventory().remove(Material.REDSTONE);
+                    else
+                        killer.getInventory().getItem(i).setAmount(j - 1);
+                }
+        }
+    }
+
     @Override
     public void message(BloodyPlayer b){
-        util.sendTitle(b.getPlayerInstance(), "§4§lTu es Murder !", "§cTu dois récupérer 5 or pour Tuer une personne", 0, 3, 0);
+        util.sendTitle(b.getPlayerInstance(), "§4§lTu es Murder !", "§cTu dois récupérer 2 piéce d'or pour Tuer une personne", 0, 3, 0);
     }
 
     @Override
@@ -91,13 +95,13 @@ public class Murder extends Role {
     public void take(BloodyPlayer b){
         for(int i = 0; i < b.getPlayerInstance().getInventory().getSize(); i++) {
             if (b.getPlayerInstance().getInventory().getItem(i) == null) { continue; }
-            if (b.getPlayerInstance().getInventory().getItem(i).getType() == Material.DOUBLE_PLANT) { continue; }
+            if (b.getPlayerInstance().getInventory().getItem(i).getType() != Material.DOUBLE_PLANT) { continue; }
             int j = b.getPlayerInstance().getInventory().getItem(i).getAmount();
-            if (j >= 5) {
-                if (j == 5)
+            if (j >= 2) {
+                if (j == 2)
                     b.getPlayerInstance().getInventory().remove(Material.DOUBLE_PLANT);
                 else
-                    b.getPlayerInstance().getInventory().getItem(i).setAmount(j - 5);
+                    b.getPlayerInstance().getInventory().getItem(i).setAmount(j - 2);
                 if (b.getPlayerInstance().getInventory().contains(Material.DOUBLE_PLANT)) {
                     ItemStack itemStack = util.create(Material.REDSTONE, 1, ChatColor.RED, "Soif de sang");
                     b.getPlayerInstance().getInventory().addItem(itemStack);
@@ -105,6 +109,8 @@ public class Murder extends Role {
                     ItemStack itemStack = util.create(Material.REDSTONE, 1, ChatColor.RED, "Soif de sang");
                     b.getPlayerInstance().getInventory().setItem(1, itemStack);
                 }
+                util.sendActionBar(b.getPlayerInstance(),"§a§l Tu as reçu 1 Soif de sang");
+                //TODO ajouter des redstone ( il se stack pas )t
             }
         }
     }
@@ -113,18 +119,21 @@ public class Murder extends Role {
         if(b.getPlayerInstance().getItemInHand().getType() != Material.DIAMOND_SWORD){return;}
         if(timer != 6){return;}
         timer--;
-        createFlyingSword(b.getPlayerInstance());
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                timer--;
-                util.sendActionBar(b.getPlayerInstance(),"§aCooldown épée : §7§l"+timer);
-                if(timer  <= 0) {
-                    timer = 6;
-                    cancel();
+        if (b.getPlayerInstance().getInventory().contains(Material.REDSTONE)) {
+            removeSoif(b.getPlayerInstance());
+            createFlyingSword(b.getPlayerInstance());
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    timer--;
+                    util.sendActionBar(b.getPlayerInstance(), "§aCooldown épée : §7§l" + timer);
+                    if (timer <= 0) {
+                        timer = 6;
+                        cancel();
+                    }
                 }
-            }
-        }.runTaskTimer(BloodyMurder.getInstance(), 0, 20);
+            }.runTaskTimer(BloodyMurder.getInstance(), 0, 20);
+        }
     }
 
     private void createFlyingSword(Player attacker) {

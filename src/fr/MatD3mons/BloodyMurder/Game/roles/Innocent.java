@@ -71,11 +71,11 @@ public class Innocent extends Role {
     public void take(BloodyPlayer b) {
         for (int i = 0; i < b.getPlayerInstance().getInventory().getSize(); i++) {
             if (b.getPlayerInstance().getInventory().getItem(i) == null) { continue;}
-            if (b.getPlayerInstance().getInventory().getItem(i).getType() != Material.GOLD_INGOT) { continue; }
+            if (b.getPlayerInstance().getInventory().getItem(i).getType() != Material.DOUBLE_PLANT) { continue; }
             int j = b.getPlayerInstance().getInventory().getItem(i).getAmount();
             if (j >= 5) {
                 if (j == 5)
-                    b.getPlayerInstance().getInventory().remove(Material.GOLD_INGOT);
+                    b.getPlayerInstance().getInventory().remove(Material.DOUBLE_PLANT);
                 else
                     b.getPlayerInstance().getInventory().getItem(i).setAmount(j - 5);
                 if (b.getPlayerInstance().getInventory().contains(Material.ARROW)) {
@@ -85,6 +85,8 @@ public class Innocent extends Role {
                     ItemStack itemStack = util.create(Material.ARROW, 1, ChatColor.GOLD, "flèche");
                     b.getPlayerInstance().getInventory().setItem(1, itemStack);
                 }
+                util.sendActionBar(b.getPlayerInstance(),"§a§l Tu as reçu 1 Fléche");
+
             }
         }
     }
