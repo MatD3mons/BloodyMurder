@@ -71,6 +71,10 @@ public class Game {
             listrole.add(Roles.Murder);
         else
             listrole.add(Roles.Innocent);
+        saveRoles();
+    }
+
+    public void saveRoles(){
         List<String> listR = util.tolistString(listrole);
         BloodyMurder.instance.getConfig().set("games."+name+".roles", listR);
         BloodyMurder.instance.saveConfig();

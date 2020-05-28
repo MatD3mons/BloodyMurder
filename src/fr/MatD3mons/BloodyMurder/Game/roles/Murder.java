@@ -5,24 +5,23 @@ import fr.MatD3mons.BloodyMurder.Game.Game;
 import fr.MatD3mons.BloodyMurder.Game.Role;
 import fr.MatD3mons.BloodyMurder.Game.Roles;
 import fr.MatD3mons.BloodyMurder.GameComponents.BloodyPlayer;
+import fr.MatD3mons.BloodyMurder.GameComponents.Sword;
 import fr.MatD3mons.BloodyMurder.utile.Repository;
 import fr.MatD3mons.BloodyMurder.utile.util;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.EulerAngle;
-import org.bukkit.util.Vector;
 
 public class Murder extends Role {
 
     private int timer = 6;
-    public Murder(){}
+
+    public Murder(){
+        skull = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjdiZjAyMzkwZDNmM2Y0Y2NlNGJmZWRjM2MxOTA0ODQxMzhhMzE3NGQ4NTQxYThmZDkxMmViYjIxNDdmY2MwZSJ9fX1";
+    }
 
     @Override
     public boolean EntityDamageByEntity(EntityDamageByEntityEvent e){
@@ -91,22 +90,20 @@ public class Murder extends Role {
     @Override
     public void take(BloodyPlayer b){
         for(int i = 0; i < b.getPlayerInstance().getInventory().getSize(); i++) {
-            if(b.getPlayerInstance().getInventory().getItem(i) != null)
-            if (b.getPlayerInstance().getInventory().getItem(i).getType() == Material.GOLD_INGOT) {
-                int j = b.getPlayerInstance().getInventory().getItem(i).getAmount();
-                if ( j >= 5){
-                    if(j == 5)
-                        b.getPlayerInstance().getInventory().remove(Material.GOLD_INGOT);
-                    else
-                        b.getPlayerInstance().getInventory().getItem(i).setAmount(j-5);
-                    if(b.getPlayerInstance().getInventory().contains(Material.RED_SANDSTONE)) {
-                        ItemStack itemStack = util.create(Material.RED_SANDSTONE, 1, ChatColor.AQUA, "Soif de sang");
-                        b.getPlayerInstance().getInventory().addItem(itemStack);
-                    }
-                    else{
-                        ItemStack itemStack = util.create(Material.RED_SANDSTONE, 1, ChatColor.AQUA, "Soif de sang");
-                        b.getPlayerInstance().getInventory().setItem(1,itemStack);
-                    }
+            if (b.getPlayerInstance().getInventory().getItem(i) == null) { continue; }
+            if (b.getPlayerInstance().getInventory().getItem(i).getType() == Material.DOUBLE_PLANT) { continue; }
+            int j = b.getPlayerInstance().getInventory().getItem(i).getAmount();
+            if (j >= 5) {
+                if (j == 5)
+                    b.getPlayerInstance().getInventory().remove(Material.DOUBLE_PLANT);
+                else
+                    b.getPlayerInstance().getInventory().getItem(i).setAmount(j - 5);
+                if (b.getPlayerInstance().getInventory().contains(Material.DOUBLE_PLANT)) {
+                    ItemStack itemStack = util.create(Material.REDSTONE, 1, ChatColor.RED, "Soif de sang");
+                    b.getPlayerInstance().getInventory().addItem(itemStack);
+                } else {
+                    ItemStack itemStack = util.create(Material.REDSTONE, 1, ChatColor.RED, "Soif de sang");
+                    b.getPlayerInstance().getInventory().setItem(1, itemStack);
                 }
             }
         }
@@ -131,28 +128,15 @@ public class Murder extends Role {
     }
 
     private void createFlyingSword(Player attacker) {
-        Location loc = attacker.getLocation();
-        Vector vec = attacker.getLocation().getDirection();
-        vec.normalize().multiply(0.65);
-        Location standStart = rotateAroundAxisY(new Vector(1.0D, 0.0D, 0.0D), loc.getYaw()).toLocation(attacker.getWorld()).add(loc);
-        standStart.setYaw(loc.getYaw());
-        ArmorStand stand = (ArmorStand) attacker.getWorld().spawnEntity(standStart, EntityType.ARMOR_STAND);
-        stand.setVisible(false);
-        stand.setCanPickupItems(true);
-        stand.setItemInHand(new ItemStack(Material.DIAMOND_SWORD,1));
-        stand.setRightArmPose(new EulerAngle(Math.toRadians(350.0), Math.toRadians(attacker.getLocation().getPitch() * -1.0), Math.toRadians(90.0)));
-        stand.setGravity(false);
-        stand.setRemoveWhenFarAway(true);
-        stand.setMarker(true);
-        Location initialise = rotateAroundAxisY(new Vector(-0.8D, 1.45D, 0.0D), loc.getYaw()).toLocation(attacker.getWorld()).add(standStart).add(rotateAroundAxisY(rotateAroundAxisX(new Vector(0.0D, 0.0D, 1.0D), loc.getPitch()), loc.getYaw()));
+        Sword sword = new Sword(attacker);
         int maxRange = 20;
         double maxHitRange = 0.5;
         new BukkitRunnable() {
             @Override
             public void run() {
-                stand.teleport(standStart.add(vec));
-                initialise.add(vec);
-                initialise.getWorld().getNearbyEntities(initialise, maxHitRange, maxHitRange, maxHitRange).forEach(entity -> {
+                sword.getBody().teleport(sword.getStandStart().add(sword.getVec()));
+                sword.getInitialise().add(sword.getVec());
+                sword.getInitialise().getWorld().getNearbyEntities(sword.getInitialise(), maxHitRange, maxHitRange, maxHitRange).forEach(entity -> {
                     if (entity instanceof Player) {
                         Player victim = (Player) entity;
                         if (!(Repository.findBloodyPlayer(victim).getRole() == Roles.Murder)) {
@@ -163,31 +147,12 @@ public class Murder extends Role {
                         }
                     }
                 });
-                if (loc.distance(initialise) > maxRange || initialise.getBlock().getType().isSolid()) {
+                if (sword.getLoc().distance(sword.getInitialise()) > maxRange || sword.getInitialise().getBlock().getType().isSolid()) {
                     this.cancel();
-                    stand.remove();
+                    sword.getBody().remove();
                 }
             }
         }.runTaskTimer(BloodyMurder.getInstance(), 0, 1);
-    }
-
-    public static Vector rotateAroundAxisX(Vector v, double angle) {
-        angle = Math.toRadians(angle);
-        double cos = Math.cos(angle);
-        double sin = Math.sin(angle);
-        double y = v.getY() * cos - v.getZ() * sin;
-        double z = v.getY() * sin + v.getZ() * cos;
-        return v.setY(y).setZ(z);
-    }
-
-    public static Vector rotateAroundAxisY(Vector v, double angle) {
-        angle = -angle;
-        angle = Math.toRadians(angle);
-        double cos = Math.cos(angle);
-        double sin = Math.sin(angle);
-        double x = v.getX() * cos + v.getZ() * sin;
-        double z = v.getX() * -sin + v.getZ() * cos;
-        return v.setX(x).setZ(z);
     }
 
     @Override

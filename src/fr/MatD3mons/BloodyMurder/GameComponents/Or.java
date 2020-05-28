@@ -69,20 +69,19 @@ public class Or {
         double maxHitRange = 0.5;
         //TODO check si y'a pas un meillieur moyen de savoir si un joueur est rentré en collision
         location.getWorld().getNearbyEntities(location, maxHitRange, 3*maxHitRange, maxHitRange).forEach(entity -> {
-            System.out.println(entity);
             if (entity instanceof Player) {
                 removefree();
                 Player p = (Player) entity;
-                if (p.getInventory().contains(Material.GOLD_INGOT)) {
+                if (p.getInventory().contains(Material.DOUBLE_PLANT)) {
                     for (int i = 0; i < p.getInventory().getSize(); i++) {
                         if (p.getInventory().getItem(i) != null)
-                            if (p.getInventory().getItem(i).getType() == Material.GOLD_INGOT) {
-                                ItemStack itemStack = util.create(Material.GOLD_INGOT, 1, ChatColor.AQUA, "Or");
+                            if (p.getInventory().getItem(i).getType() == Material.DOUBLE_PLANT) {
+                                ItemStack itemStack = util.create(Material.DOUBLE_PLANT, 1, ChatColor.GOLD, "Pièce d'or");
                                 p.getInventory().addItem(itemStack);
                             }
                     }
                 } else {
-                    ItemStack itemStack = util.create(Material.GOLD_INGOT, 1, ChatColor.AQUA, "Or");
+                    ItemStack itemStack = util.create(Material.DOUBLE_PLANT, 1, ChatColor.GOLD, "Pièce d'or");
                     p.getInventory().setItem(8, itemStack);
                 }
                 BloodyPlayer b = Repository.findBloodyPlayer(p);

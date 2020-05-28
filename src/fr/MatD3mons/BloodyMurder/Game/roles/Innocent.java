@@ -15,7 +15,9 @@ import org.bukkit.inventory.ItemStack;
 
 public class Innocent extends Role {
 
-    public Innocent(){ }
+    public Innocent(){
+        skull = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjdiZjAyMzkwZDNmM2Y0Y2NlNGJmZWRjM2MxOTA0ODQxMzhhMzE3NGQ4NTQxYThmZDkxMmViYjIxNDdmY2MwZSJ9fX1";
+    }
 
     @Override
     public boolean EntityDamageByEntity(EntityDamageByEntityEvent e) {
@@ -28,16 +30,14 @@ public class Innocent extends Role {
         Game g = Repository.findBloodyPlayer(killer).getGame();
         if (g.getMode() != Game.GameMode.GAME) { return false;}
         Player p2 = (Player) e.getEntity();
+        p2.getInventory().clear();
+        e.setDamage(100);
         if (Repository.findBloodyPlayer(p2).getRole() == Roles.Murder) {
-            p2.getInventory().clear();
-            e.setDamage(100);
             Repository.findBloodyPlayer(killer).addkills();
             return true;
         } else {
             Repository.findBloodyPlayer(killer).removekills();
             g.supInnocent(Repository.findBloodyPlayer(p2));
-            p2.getInventory().clear();
-            e.setDamage(100);
             return true;
         }
     }
@@ -50,7 +50,8 @@ public class Innocent extends Role {
     @Override
     public void stuff(BloodyPlayer b){
         ItemStack itemStack = util.create(Material.BOW,1,ChatColor.AQUA,"Arc");
-        b.getPlayerInstance().getInventory().setItem(0,itemStack);    }
+        b.getPlayerInstance().getInventory().setItem(0,itemStack);
+    }
 
     @Override
     public void fin(BloodyPlayer b){
@@ -67,24 +68,22 @@ public class Innocent extends Role {
     }
 
     @Override
-    public void take(BloodyPlayer b){
-        for(int i = 0; i < b.getPlayerInstance().getInventory().getSize(); i++) {
-            if(b.getPlayerInstance().getInventory().getItem(i) != null)
-                if (b.getPlayerInstance().getInventory().getItem(i).getType() == Material.GOLD_INGOT) {
-                int j = b.getPlayerInstance().getInventory().getItem(i).getAmount();
-                if ( j >= 5){
-                    if(j == 5)
-                         b.getPlayerInstance().getInventory().remove(Material.GOLD_INGOT);
-                    else
-                        b.getPlayerInstance().getInventory().getItem(i).setAmount(j-5);
-                    if(b.getPlayerInstance().getInventory().contains(Material.ARROW)) {
-                        ItemStack itemStack = util.create(Material.ARROW, 10, ChatColor.AQUA, "flèche");
-                        b.getPlayerInstance().getInventory().addItem(itemStack);
-                    }
-                    else{
-                        ItemStack itemStack = util.create(Material.ARROW, 10, ChatColor.AQUA, "flèche");
-                        b.getPlayerInstance().getInventory().setItem(1,itemStack);
-                    }
+    public void take(BloodyPlayer b) {
+        for (int i = 0; i < b.getPlayerInstance().getInventory().getSize(); i++) {
+            if (b.getPlayerInstance().getInventory().getItem(i) == null) { continue;}
+            if (b.getPlayerInstance().getInventory().getItem(i).getType() != Material.GOLD_INGOT) { continue; }
+            int j = b.getPlayerInstance().getInventory().getItem(i).getAmount();
+            if (j >= 5) {
+                if (j == 5)
+                    b.getPlayerInstance().getInventory().remove(Material.GOLD_INGOT);
+                else
+                    b.getPlayerInstance().getInventory().getItem(i).setAmount(j - 5);
+                if (b.getPlayerInstance().getInventory().contains(Material.ARROW)) {
+                    ItemStack itemStack = util.create(Material.ARROW, 1, ChatColor.GOLD, "flèche");
+                    b.getPlayerInstance().getInventory().addItem(itemStack);
+                } else {
+                    ItemStack itemStack = util.create(Material.ARROW, 1, ChatColor.GOLD, "flèche");
+                    b.getPlayerInstance().getInventory().setItem(1, itemStack);
                 }
             }
         }

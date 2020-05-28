@@ -83,13 +83,12 @@ public class BloodyPlayer{
         argent += kills * 25 + gold;
         gold = 0;
         kills = 0;
-        if (role != null) {
-            if (r == role) {
+        if(r != null){
+            if(r == Roles.Innocent && role != Roles.Murder){
                 win += 1;
-                argent += 100;
+                argent += 50;
             } else {
-                if (r != null)
-                    lose += 1;
+                lose += 1;
             }
         }
         setRole(null);
