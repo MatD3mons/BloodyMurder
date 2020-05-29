@@ -24,6 +24,12 @@ public class Arc {
 
     public Arc(Location location) {
         this.location = location.subtract(0,1,0);
+        create();
+        rotate();
+    }
+
+    public void create(){
+        if(this.body != null){return;}
         this.body = (ArmorStand) location.getWorld().spawnEntity(location, EntityType.ARMOR_STAND);
         this.body.setVisible(false);
         this.body.setCanPickupItems(true);
@@ -32,7 +38,12 @@ public class Arc {
         this.body.setMarker(true);
         this.body.setHeadPose(new EulerAngle(Math.toRadians(0),Math.toRadians(0),Math.toRadians(0)));
         this.body.setHelmet(arc);
-        rotate();
+    }
+
+    public void remove(){
+        if(this.body == null){return;}
+        this.body.remove();
+        this.body = null;
     }
 
     public void rotate() {
@@ -55,7 +66,7 @@ public class Arc {
                         b.getPlayerInstance().getInventory().setItem(0,itemStack);
                         ItemStack itemStack2 = util.create(Material.ARROW, 1, ChatColor.AQUA, "flèche");
                         b.getPlayerInstance().getInventory().setItem(1,itemStack2);
-                        body.remove();
+                        remove();
                         p.playSound(p.getLocation(), Sound.MAGMACUBE_JUMP, 2F, 1F);
                         cancel();
                     }

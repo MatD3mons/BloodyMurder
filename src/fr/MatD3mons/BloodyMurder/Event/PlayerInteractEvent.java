@@ -27,7 +27,7 @@ public class PlayerInteractEvent implements Listener {
                 break;
             case GAME:
                 if (b.getRole() == Roles.Murder)
-                    if ((a != Action.PHYSICAL))
+                    if ((a == Action.RIGHT_CLICK_AIR ||a == Action.RIGHT_CLICK_BLOCK))
                         Roles.PlayerRoles.get(Roles.Murder).Interact(b);
                 break;
         }

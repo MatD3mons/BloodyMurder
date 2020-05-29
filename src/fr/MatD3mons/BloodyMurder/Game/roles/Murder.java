@@ -102,7 +102,7 @@ public class Murder extends Role {
                     b.getPlayerInstance().getInventory().remove(Material.DOUBLE_PLANT);
                 else
                     b.getPlayerInstance().getInventory().getItem(i).setAmount(j - 2);
-                if (b.getPlayerInstance().getInventory().contains(Material.DOUBLE_PLANT)) {
+                if (b.getPlayerInstance().getInventory().contains(Material.REDSTONE)) {
                     ItemStack itemStack = util.create(Material.REDSTONE, 1, ChatColor.RED, "Soif de sang");
                     b.getPlayerInstance().getInventory().addItem(itemStack);
                 } else {
@@ -110,16 +110,17 @@ public class Murder extends Role {
                     b.getPlayerInstance().getInventory().setItem(1, itemStack);
                 }
                 util.sendActionBar(b.getPlayerInstance(),"§a§l Tu as reçu 1 Soif de sang");
-                //TODO ajouter des redstone ( il se stack pas )t
+                //TODO ajouter des redstone ( il se stack pas )
             }
         }
     }
 
     public void Interact(BloodyPlayer b){
         if(b.getPlayerInstance().getItemInHand().getType() != Material.DIAMOND_SWORD){return;}
+        System.out.println(timer);
         if(timer != 6){return;}
-        timer--;
         if (b.getPlayerInstance().getInventory().contains(Material.REDSTONE)) {
+            timer--;
             removeSoif(b.getPlayerInstance());
             createFlyingSword(b.getPlayerInstance());
             new BukkitRunnable() {
@@ -133,6 +134,9 @@ public class Murder extends Role {
                     }
                 }
             }.runTaskTimer(BloodyMurder.getInstance(), 0, 20);
+        }
+        else{
+            util.sendActionBar(b.getPlayerInstance(),"Tu n'as pas de soif de sang");
         }
     }
 

@@ -228,15 +228,18 @@ public class Game {
     }
 
     public void setDisable(){
-        playerInGame.clear();
-        innocentleft.clear();
-        murderleft.clear();
-        for (Team t: listTeam.values()){
-            t.unregister();
+        if (mode != GameMode.DISABLE) {
+            mode = GameMode.DISABLE;
+            playerInGame.clear();
+            innocentleft.clear();
+            murderleft.clear();
+            for (Team t : listTeam.values())
+                t.unregister();
+            for (Or or : listor)
+                or.remove();
+            listTeam.clear();
+            mode = GameMode.DISABLE;
         }
-        listTeam.clear();
-        mode = GameMode.DISABLE;
-        Removeor();
     }
 
     public void supInnocent(BloodyPlayer b){
@@ -272,6 +275,9 @@ public class Game {
                 b.getPlayerInstance().setGameMode(org.bukkit.GameMode.ADVENTURE);
                 ItemStack itemStack = util.create(Material.BED,1,ChatColor.RED,"Lobby");
                 b.getPlayerInstance().getInventory().setItem(8,itemStack);
+            }
+            for(Or or:listor){
+                or.create();
             }
             new BukkitRunnable() {
                 @Override
@@ -311,20 +317,17 @@ public class Game {
                             timer = 20;
                         }
                     } else {
-                        if (mode == GameMode.WAITING) {
-                            if (playerInGame.size() >= 1) {//TODO mettre +
-                                timer--;
-                            }
-                            else if(playerInGame.size() == 0){
-                                setDisable();
-                                cancel();
-                            }else{
-                                timer = 20;
-                            }
-                        } else {
+                        if (playerInGame.size() >= 1) {//TODO mettre +
+                            timer--;
+                        }
+                        else if(playerInGame.size() == 0){
+                            setDisable();
                             cancel();
+                        }else{
+                            timer = 20;
                         }
                     }
+
                     if(mode != GameMode.WAITING)
                         cancel();
                 }
@@ -367,11 +370,7 @@ public class Game {
                         setEnd(Roles.Innocent);
                         cancel();
                     } else {
-                        if (mode == GameMode.GAME) {
                             timer--;
-                        } else {
-                            cancel();
-                        }
                     }
                     if(mode != GameMode.GAME)
                         cancel();
@@ -423,12 +422,9 @@ public class Game {
                         }
                         cancel();
                     } else {
-                        if (mode == GameMode.END) {
-                            timer--;
-                        } else {
-                            cancel();
-                        }
+                        timer--;
                     }
+
                     if(mode != GameMode.END)
                         cancel();
                 }

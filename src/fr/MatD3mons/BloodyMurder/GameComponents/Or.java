@@ -27,6 +27,13 @@ public class Or {
 
     public Or(Location location) {
         this.location = location;
+        this.free = 5;
+        this.i = 0;
+        create();
+    }
+
+    public void create(){
+        if(this.body != null){return;}
         this.body = (ArmorStand) location.getWorld().spawnEntity(location, EntityType.ARMOR_STAND);
         this.body.setVisible(false);
         this.body.setCanPickupItems(true);
@@ -34,8 +41,13 @@ public class Or {
         this.body.setRemoveWhenFarAway(true);
         this.body.setMarker(true);
         this.body.setHeadPose(new EulerAngle(Math.toRadians(0),Math.toRadians(0),Math.toRadians(0)));
-        this.free = 5;
-        this.i = 0;
+    }
+
+    public void remove(){
+        if(this.body == null){return;}
+        this.body.remove();
+        System.out.println(this.body);
+        this.body = null;
     }
 
     public static List<Location> getlist(ArrayList<Or> listor) {
@@ -55,6 +67,7 @@ public class Or {
     }
 
     public void removefree(){
+        if(this.body == null){return;}
         this.body.setHelmet(air);
         this.free = 5;
     }
